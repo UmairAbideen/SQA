@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    @include('admin.Layout.common-head')
+    @include('admin.layout.common-head')
 </head>
 
 <body class="bg-gray-200">
@@ -110,7 +110,7 @@
         </div>
     </main>
 
-    @include('admin.Layout.common-end')
+    @include('admin.layout.common-end')
 
 </body>
 
