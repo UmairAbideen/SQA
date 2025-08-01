@@ -4,7 +4,7 @@
 
     <div class="sidenav-header d-flex justify-content-center mb-2">
         <a class="navbar-brand m-0" href="" target="_blank">
-            <img src="/assets/img/logo-2.png" class="navbar-brand-img" alt="main_logo">
+            {{-- <img src="/assets/img/logo-2.png" class="navbar-brand-img" alt="main_logo"> --}}
         </a>
     </div>
 
