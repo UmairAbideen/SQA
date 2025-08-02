@@ -163,17 +163,6 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Inspection Status</label>
-                                        <input type="text" name="status" class="form-control"
-                                            value="{{ old('status') }}">
-                                        @error('status')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <div class="mt-3">
                                     <button type="submit" class="btn bg-gradient-success">Submit</button>
                                 </div>

@@ -31,6 +31,6 @@ class AuditFinding extends Model
 
     public function reply()
     {
-        return $this->hasOne(AuditReply::class);
+        return $this->hasMany(AuditReply::class);
     }
 }

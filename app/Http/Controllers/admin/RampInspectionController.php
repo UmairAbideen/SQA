@@ -11,9 +11,10 @@ use Illuminate\Support\Facades\Storage;
 
 class RampInspectionController extends Controller
 {
+
     public function view()
     {
-        $rampInspections = RampInspection::get();
+        $rampInspections = RampInspection::with('rampInspectionFinding')->get(); // preload findings
         return view('admin.rampinspection.view', ['rampInspections' => $rampInspections]);
     }
 
@@ -25,7 +26,6 @@ class RampInspectionController extends Controller
 
 
     public function create(Request $request)
-
     {
         $request->validate([
             'date' => 'required|date', // Date of the inspection
@@ -39,7 +39,7 @@ class RampInspectionController extends Controller
             'inspection_ref_no' => 'nullable|string|max:255', // Inspection reference number
             'inspection_type' => 'nullable|string|max:255', // Type of inspection
             'inspector' => 'nullable|string|max:255', // Inspector name
-            'status' => 'nullable|string|max:255', // Inspection status
+            // 'status' => 'nullable|string|max:255', // Inspection status
         ]);
 
 
@@ -56,7 +56,7 @@ class RampInspectionController extends Controller
             'inspection_ref_no' => $request->inspection_ref_no,
             'inspection_type' => $request->inspection_type,
             'inspector' => $request->inspector,
-            'status' => $request->status,
+            'status' => 'Open',
             'created_at' => now(),
         ]);
 
@@ -129,11 +129,38 @@ class RampInspectionController extends Controller
 
     // ================================   Findings   ======================================
 
+    // All findings
     public function findingView($id)
     {
-        $rampInspection = RampInspection::with('rampInspectionFinding')->find($id);
+        $rampInspection = RampInspection::with('rampInspectionFinding')->findOrFail($id);
 
-        return view('admin.rampinspection.finding.view', ['rampInspection' => $rampInspection]);
+        return view('admin.rampinspection.finding.view', [
+            'rampInspection' => $rampInspection,
+        ]);
+    }
+
+    // Open findings
+    public function findingViewOpen($id)
+    {
+        $rampInspection = RampInspection::with(['rampInspectionFinding' => function ($query) {
+            $query->where('status', 'Open');
+        }])->findOrFail($id);
+
+        return view('admin.rampinspection.finding.view', [
+            'rampInspection' => $rampInspection,
+        ]);
+    }
+
+    // Closed findings
+    public function findingViewClose($id)
+    {
+        $rampInspection = RampInspection::with(['rampInspectionFinding' => function ($query) {
+            $query->where('status', 'Close');
+        }])->findOrFail($id);
+
+        return view('admin.rampinspection.finding.view', [
+            'rampInspection' => $rampInspection,
+        ]);
     }
 
 
@@ -151,8 +178,8 @@ class RampInspectionController extends Controller
             'category' => 'nullable|string|max:255',
             'finding' => 'nullable|string|max:255',
             'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Validate file type and size
-            'status' => 'required|string|max:255',
-            'closed_by' => 'nullable|string|max:255',
+            // 'status' => 'required|string|max:255',
+            // 'closed_by' => 'nullable|string|max:255',
         ]);
 
         $rampInspection = RampInspection::find($request->ramp_inspection_id);
@@ -174,8 +201,8 @@ class RampInspectionController extends Controller
             'category' => $request->category,
             'finding' => $request->finding,
             'attachment' => $attachmentPath, // Save the custom file path in the database
-            'status' => $request->status,
-            'closed_by' => $request->closed_by,
+            'status' => 'Open',
+            // 'closed_by' => $request->closed_by,
             'created_at' => now(),
         ]);
 
@@ -239,7 +266,6 @@ class RampInspectionController extends Controller
 
 
 
-
     public function findingDelete($id)
     {
         $rampInspectionFinding = RampInspectionFinding::find($id);
@@ -289,15 +315,10 @@ class RampInspectionController extends Controller
             'remarks' => 'nullable|string|max:255', // Additional remarks
             'remarks_by' => 'nullable|string|max:255', // Person who provided the remarks
             'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Validate file type and size
-            'status' => 'nullable|string|max:255', // Current status of the reply
+            // 'status' => 'nullable|string|max:255', // Current status of the reply
         ]);
 
         $rampInspectionFinding = RampInspectionFinding::find($request->finding_id);
-
-        // Check if a reply already exists
-        if ($rampInspectionFinding->rampInspectionReply) {
-            return back()->with('status', 'A Reply for this finding already exists.');
-        }
 
         // Initialize a variable to store the file path
         $attachmentPath = null;
@@ -317,7 +338,7 @@ class RampInspectionController extends Controller
             'remarks' => $request->remarks, // Additional remarks
             'remarks_by' => $request->remarks_by, // Person who provided the remarks
             'attachment' => $attachmentPath, // Save the custom file path in the database
-            'status' => $request->status, // Current status of the reply
+            'status' => 'Open', // Current status of the reply
             'created_at' => now(),
         ]);
 

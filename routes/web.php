@@ -123,6 +123,16 @@ Route::get('/admin/document/manual/delete/{id}', [ManualController::class, 'dele
 
 Route::get('/admin/rampinspection/view', [RampInspectionController::class, 'view'])->name('admin.rampinspection.view')->middleware('Admin');
 
+// View only Open findings
+Route::get('/admin/rampinspection/finding/view/open/{id}', [RampInspectionController::class, 'findingViewOpen'])
+    ->name('admin.rampinspection.finding.view.open')
+    ->middleware('Admin');
+
+// View only Closed findings
+Route::get('/admin/rampinspection/finding/view/close/{id}', [RampInspectionController::class, 'findingViewClose'])
+    ->name('admin.rampinspection.finding.view.close')
+    ->middleware('Admin');
+
 Route::get('/admin/rampinspection/form', [RampInspectionController::class, 'form'])->name('admin.rampinspection.form')->middleware('Admin');
 
 Route::post('/admin/rampinspection/create', [RampInspectionController::class, 'create'])->name('admin.rampinspection.create')->middleware('Admin');
@@ -185,6 +195,10 @@ Route::get('/admin/audit/delete/{id}', [AuditController::class, 'delete'])->name
 // ========= Audit Findings ===========================================
 
 Route::get('/admin/audit/finding/view/{id}', [AuditController::class, 'findingView'])->name('admin.audit.finding.view')->middleware('Admin');
+
+Route::get('/admin/audit/finding/view/{id}/open', [AuditController::class, 'findingViewOpen'])->name('admin.audit.finding.view.open')->middleware('Admin');
+
+Route::get('/admin/audit/finding/view/{id}/close', [AuditController::class, 'findingViewClose'])->name('admin.audit.finding.view.close')->middleware('Admin');
 
 Route::get('/admin/audit/finding/form/{id}', [AuditController::class, 'findingForm'])->name('admin.audit.finding.form')->middleware('Admin');
 

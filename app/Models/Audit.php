@@ -16,10 +16,27 @@ class Audit extends Model
         'section',
         'location',
         'audit_date',
+        'status',
     ];
 
     public function finding()
     {
         return $this->hasMany(AuditFinding::class);
+    }
+
+
+    public function getTotalFindingsAttribute()
+    {
+        return $this->finding->count();
+    }
+
+    public function getOpenFindingsAttribute()
+    {
+        return $this->finding->where('status', 'Open')->count();
+    }
+
+    public function getCloseFindingsAttribute()
+    {
+        return $this->finding->where('status', 'Close')->count();
     }
 }

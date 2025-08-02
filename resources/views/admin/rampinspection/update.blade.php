@@ -163,11 +163,20 @@
                                     </div>
                                 </div>
 
+                                <!-- Status -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Status</label>
-                                        <input type="text" name="status" class="form-control"
-                                            value="{{ $rampinspection->status }}">
+                                        <select name="status" class="form-control">
+                                            <option value="Open"
+                                                {{ old('status', $rampinspection->status) != 'Close' ? 'selected' : '' }}>
+                                                Open
+                                            </option>
+                                            <option value="Close"
+                                                {{ old('status', $rampinspection->status) == 'Close' ? 'selected' : '' }}>
+                                                Close
+                                            </option>
+                                        </select>
                                         @error('status')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror

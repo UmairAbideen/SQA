@@ -16,9 +16,10 @@ class AuditController extends Controller
 
     public function view()
     {
-        $audits = Audit::get(); // Fetch all audits
-        return view('admin.audit.view', ['audits' => $audits]);
+        $audits = Audit::with('finding')->get();
+        return view('admin.audit.view', compact('audits'));
     }
+
 
 
     public function form()
@@ -45,6 +46,7 @@ class AuditController extends Controller
             'section' => $request->section,
             'location' => $request->location,
             'audit_date' => $request->audit_date,
+            'status' => 'Open',
             'created_at' => now(),
         ]);
 
@@ -67,6 +69,7 @@ class AuditController extends Controller
             'section' => 'nullable|string|max:255', // Section involved
             'location' => 'nullable|string|max:255', // Audit location
             'audit_date' => 'required|date', // Date of audit
+            'status' => 'nullable|string|max:255',
         ]);
 
         $audit = Audit::findOrFail($id);
@@ -78,6 +81,7 @@ class AuditController extends Controller
             'section' => $request->section,
             'location' => $request->location,
             'audit_date' => $request->audit_date,
+            'status' => $request->status,
             'updated_at' => now(),
         ]);
 
@@ -99,9 +103,31 @@ class AuditController extends Controller
 
     // ================================ Findings for Audit ======================================
 
+
+    // Show all findings for an audit
     public function findingView($id)
     {
         $audit = Audit::with('finding')->find($id);
+        return view('admin.audit.finding.view', ['audits' => $audit]);
+    }
+
+    // Show only Open findings for an audit
+    public function findingViewOpen($id)
+    {
+        $audit = Audit::with(['finding' => function ($query) {
+            $query->where('status', 'Open');
+        }])->findOrFail($id);
+
+        return view('admin.audit.finding.view', ['audits' => $audit]);
+    }
+
+    // Show only Closed findings for an audit
+    public function findingViewClose($id)
+    {
+        $audit = Audit::with(['finding' => function ($query) {
+            $query->where('status', 'Close');
+        }])->findOrFail($id);
+
         return view('admin.audit.finding.view', ['audits' => $audit]);
     }
 
@@ -124,9 +150,7 @@ class AuditController extends Controller
             'finding_level' => 'nullable|string|max:255',
             'repeated_finding' => 'required',
             'nature_of_finding' => 'nullable|string|max:255',
-            'validity_date' => 'nullable|date',
             'auditor' => 'nullable|string|max:255',
-            'status' => 'required|string|max:255',
             'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // File validation
         ]);
 
@@ -156,9 +180,8 @@ class AuditController extends Controller
             'finding_level' => $request->finding_level,
             'repeated_finding' => $request->repeated_finding,
             'nature_of_finding' => $request->nature_of_finding,
-            'validity_date' => $request->validity_date,
             'auditor' => $request->auditor,
-            'status' => $request->status,
+            'status' => 'Open',
             'attachment' => $attachmentPath, // Save file path in the database
             'created_at' => now(),
         ]);
@@ -266,45 +289,32 @@ class AuditController extends Controller
         ]);
     }
 
-
-
     public function replyCreate(Request $request)
     {
         $request->validate([
-            'date' => 'nullable|date', // Date of reply
-            'time' => 'nullable', // Time of reply
-            'reply' => 'nullable|string', // Reply content
-            'root_cause' => 'nullable|string', // Root cause analysis
-            'corrective_action' => 'nullable|string', // Corrective action taken
-            'preventive_action' => 'nullable|string', // Preventive measures
-            'reply_by' => 'nullable|string|max:255', // Person who replied
-            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048', // Attachment file
-            'attachment_detail' => 'nullable|string', // Attachment details
-            'target_date_after_extension' => 'nullable|date', // Target date after extension
-            'qa_remarks' => 'nullable|string', // QA remarks
-            'closed_by' => 'nullable|string|max:255', // Closed by
+            'date' => 'required|date',
+            'time' => 'nullable',
+            'reply' => 'required|string',
+            'root_cause' => 'required|string',
+            'corrective_action' => 'required|string',
+            'preventive_action' => 'required|string',
+            'reply_by' => 'required|string|max:255',
+            'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'attachment_detail' => 'nullable|string',
+            'target_date_after_extension' => 'nullable|date',
+            'qa_remarks' => 'nullable|string',
             'final_remarks' => 'nullable|string', // Final remarks
-            'status' => 'nullable|string|max:255', // Status
-            'closing_date' => 'nullable|date', // Closing date
-            'closing_remarks' => 'nullable|string', // Closing remarks
         ]);
 
         $auditFinding = AuditFinding::find($request->finding_id);
 
-        // Check if a reply already exists
-        if ($auditFinding->reply) {
-            return back()->with('status', 'A Reply for this finding already exists.');
-        }
-
-        // Initialize a variable to store the file path
         $attachmentPath = null;
 
         if ($request->hasFile('attachment')) {
-            // Store the uploaded file in the custom directory
             $attachmentPath = $request->file('attachment')->storeAs(
-                'assets/audit/reply/attachment', // Custom directory path
-                time() . '_' . $request->file('attachment')->getClientOriginalName(), // Custom file name
-                'public' // Save to the 'public' disk
+                'assets/audit/reply/attachment',
+                time() . '_' . $request->file('attachment')->getClientOriginalName(),
+                'public'
             );
         }
 
@@ -320,16 +330,14 @@ class AuditController extends Controller
             'attachment_detail' => $request->attachment_detail,
             'target_date_after_extension' => $request->target_date_after_extension,
             'qa_remarks' => $request->qa_remarks,
-            'closed_by' => $request->closed_by,
             'final_remarks' => $request->final_remarks,
-            'status' => $request->status,
-            'closing_date' => $request->closing_date,
-            'closing_remarks' => $request->closing_remarks,
+            'status' => 'Open',
             'created_at' => now(),
         ]);
 
         return back()->with('status', 'Finding Reply has been Created.');
     }
+
 
     public function replyEdit($id)
     {
@@ -354,11 +362,11 @@ class AuditController extends Controller
             'attachment_detail' => 'nullable|string', // Attachment details
             'target_date_after_extension' => 'nullable|date', // Target date after extension
             'qa_remarks' => 'nullable|string', // QA remarks
-            'closed_by' => 'nullable|string|max:255', // Closed by
             'final_remarks' => 'nullable|string', // Final remarks
-            'status' => 'nullable|string|max:255', // Status
             'closing_date' => 'nullable|date', // Closing date
             'closing_remarks' => 'nullable|string', // Closing remarks
+            'closed_by' => 'nullable|string|max:255', // Closed by
+            'status' => 'nullable|string|max:255', // Status
         ]);
 
         $reply = AuditReply::find($id);
@@ -392,11 +400,11 @@ class AuditController extends Controller
             'attachment_detail' => $request->attachment_detail,
             'target_date_after_extension' => $request->target_date_after_extension,
             'qa_remarks' => $request->qa_remarks,
-            'closed_by' => $request->closed_by,
             'final_remarks' => $request->final_remarks,
-            'status' => $request->status,
             'closing_date' => $request->closing_date,
             'closing_remarks' => $request->closing_remarks,
+            'closed_by' => $request->closed_by,
+            'status' => $request->status,
         ]);
 
         return back()->with('status', 'Finding Reply has been updated successfully.');

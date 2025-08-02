@@ -1,11 +1,11 @@
 @extends('admin.layout.app')
 
 @section('title')
-Aircraft Inspection Findings
+    Aircraft Inspection Findings
 @endsection
 
 @section('page-name')
-Aircraft Inspection Findings
+    Aircraft Inspection Findings
 @endsection
 
 @section('active-link-ramp')
@@ -146,6 +146,8 @@ Aircraft Inspection Findings
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">
+                                            Replies</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
                                         </th>
 
@@ -153,18 +155,12 @@ Aircraft Inspection Findings
                                 </thead>
                                 <tbody>
                                     @foreach ($rampInspection->rampInspectionFinding as $index => $finding)
-                                        <tr>
+                                        <tr class="clickable-row"
+                                            data-href="{{ route('admin.rampinspection.finding.reply.view', $finding->id) }}">
+
                                             <td class="align-middle text-center text-sm">{{ $index + 1 }}</td>
 
-                                            <td class="align-middle text-center text-sm">
-                                                <div class="d-flex justify-content-center align-items-center mt-3">
-                                                    <a href="{{ route('admin.rampinspection.finding.reply.view', $finding->id) }}"
-                                                        class="btn bg-gradient-secondary px-3 py-2" role="button"
-                                                        aria-pressed="true">
-                                                        {{ $finding->code }}
-                                                    </a>
-                                                </div>
-                                            </td>
+                                            <td class="align-middle text-center text-sm">{{ $finding->code }}</td>
 
                                             <td class="align-middle text-center text-sm">{{ $finding->category }}</td>
 
@@ -174,7 +170,11 @@ Aircraft Inspection Findings
                                             </td>
 
                                             <td class="align-middle text-center text-sm">
-                                                {{ $finding->closed_by }}
+                                                @if (is_null($finding->closed_by))
+                                                    None
+                                                @else
+                                                    {{ $finding->closed_by }}
+                                                @endif
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 {{ $finding->status }}
@@ -182,7 +182,7 @@ Aircraft Inspection Findings
 
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <div>
+                                                    @if ($finding->attachment)
                                                         <a href="{{ asset('storage/' . $finding->attachment) }}"
                                                             target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
@@ -191,8 +191,6 @@ Aircraft Inspection Findings
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
                                                         </a>
-                                                    </div>
-                                                    <div>
                                                         <a href="{{ asset('storage/' . $finding->attachment) }}"
                                                             target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
@@ -201,7 +199,19 @@ Aircraft Inspection Findings
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">download</span>
                                                         </a>
-                                                    </div>
+                                                    @else
+                                                        None
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            <td class="align-middle text-center text-sm">
+                                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                                    <a href="{{ route('admin.rampinspection.finding.reply.view', $finding->id) }}"
+                                                        class="btn bg-gradient-secondary px-3 py-2" role="button"
+                                                        aria-pressed="true">
+                                                        View
+                                                    </a>
                                                 </div>
                                             </td>
 
@@ -293,4 +303,22 @@ Aircraft Inspection Findings
             </div>
         </div>
     </div>
+
+    {{-- To make rows cilckable and prevent icons link to be effected --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.clickable-row').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    // Prevent row click if a link or button inside was clicked
+                    if (e.target.closest('a') || e.target.closest('button') || e.target.closest(
+                            '.material-icons')) {
+                        return;
+                    }
+
+                    // Otherwise, navigate to row's href
+                    window.location = this.dataset.href;
+                });
+            });
+        });
+    </script>
 @endsection

@@ -133,175 +133,143 @@
                                             Date (After Extension)</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">QA Remarks
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Closed By
-                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Final
                                             Remarks</th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Status
-                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Closing
                                             Date</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Closing
                                             Remarks</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Closed By
+                                        </th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Status
+                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if ($auditFindings->reply)
-                                        <tr>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($auditFindings->reply->date)->format('d/M/y') }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($auditFindings->reply->time)->format('h:i A') }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->reply }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->root_cause }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->corrective_action }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->preventive_action }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ $auditFindings->reply->reply_by }}
-                                            </td>
+                                        @foreach ($auditFindings->reply as $reply)
+                                            <tr>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ \Carbon\Carbon::parse($reply->date)->format('d/M/y') }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ \Carbon\Carbon::parse($reply->time)->format('h:i A') }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->reply }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->root_cause }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->corrective_action }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->preventive_action }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->reply_by }}
+                                                </td>
 
-                                            <td>
-                                                <div class="d-flex justify-content-center align-items-center">
-                                                    <div>
-                                                        <a href="{{ asset('storage/' . $auditFindings->reply->attachment) }}"
-                                                            target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="print">
-                                                            <span class="material-icons"
-                                                                style="font-size: 1.5rem;">print</span>
-                                                        </a>
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        @if ($reply->attachment)
+                                                            <a href="{{ asset('storage/' . $reply->attachment) }}"
+                                                                target="_blank"
+                                                                class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                                title="Print">
+                                                                <span class="material-icons"
+                                                                    style="font-size: 1.5rem;">print</span>
+                                                            </a>
+                                                            <a href="{{ asset('storage/' . $reply->attachment) }}"
+                                                                target="_blank"
+                                                                class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                                title="Download" download>
+                                                                <span class="material-icons"
+                                                                    style="font-size: 1.5rem;">download</span>
+                                                            </a>
+                                                        @else
+                                                            None
+                                                        @endif
                                                     </div>
+                                                </td>
 
-                                                    <div>
-                                                        <a href="{{ asset('storage/' . $auditFindings->reply->attachment) }}"
-                                                            target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="download" download>
-                                                            <span class="material-icons"
-                                                                style="font-size: 1.5rem;">download</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->attachment_detail ?? 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->target_date_after_extension ? \Carbon\Carbon::parse($reply->target_date_after_extension)->format('d/M/y') : 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->qa_remarks ?? 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->final_remarks ?? 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->closing_date ? \Carbon\Carbon::parse($reply->closing_date)->format('d/M/y') : 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->closing_remarks ?? 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->closed_by ?? 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->status ?? 'None' }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->attachment_detail }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($auditFindings->reply->target_date_after_extension)->format('d/M/y') }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->qa_remarks }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ $auditFindings->reply->closed_by }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->final_remarks }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ $auditFindings->reply->status }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($auditFindings->reply->closing_date)->format('d/M/y') }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $auditFindings->reply->closing_remarks }}
-                                            </td>
-
-                                            <td>
-                                                <div class="d-flex justify-content-center align-items-center">
-
-                                                    <div>
-                                                        <a href="" target="_blank"
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <a href="{{ route('admin.audit.finding.reply.edit', $reply->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
-                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="print">
-                                                            <span class="material-icons"
-                                                                style="font-size: 1.5rem;">print</span>
-                                                        </a>
-                                                    </div>
-
-                                                    <div>
-                                                        <a href="{{ route('admin.audit.finding.reply.edit', $auditFindings->reply->id) }}"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
-                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="update">
+                                                            title="Update">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">update</span>
                                                         </a>
-                                                    </div>
 
-                                                    <div>
                                                         <button type="button" class="btn bg-transparent btn-sm m-0"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#modal-delete-{{ $auditFindings->reply->id }}"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                            title="delete">
+                                                            data-bs-target="#modal-delete-{{ $reply->id }}"
+                                                            title="Delete">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">delete</span>
                                                         </button>
 
-                                                        <!-- Modal Structure -->
-                                                        <div class="modal fade"
-                                                            id="modal-delete-{{ $auditFindings->reply->id }}"
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="modal-delete-{{ $reply->id }}"
                                                             tabindex="-1" role="dialog"
-                                                            aria-labelledby="modal-delete-{{ $auditFindings->reply->id }}"
+                                                            aria-labelledby="modal-delete-{{ $reply->id }}"
                                                             aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered modal-"
+                                                            <div class="modal-dialog modal-dialog-centered"
                                                                 role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h6 class="modal-title font-weight-normal"
-                                                                            id="modal-title-default">Reply
-                                                                            Deletion
-                                                                        </h6>
+                                                                        <h6 class="modal-title">Delete Reply</h6>
                                                                         <button type="button" class="btn-close text-dark"
-                                                                            data-bs-dismiss="modal" aria-label="Close">
-                                                                            <span aria-hidden="true">×</span>
-                                                                        </button>
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"><span
+                                                                                aria-hidden="true">×</span></button>
                                                                     </div>
                                                                     <div class="modal-body">
-                                                                        <p>Do you want to remove the record?</p>
+                                                                        <p>Do you want to remove this reply?</p>
                                                                     </div>
                                                                     <div class="modal-footer">
-                                                                        <!-- Yes Button with Tooltip -->
-                                                                        <a href="{{ route('admin.audit.finding.reply.delete', $auditFindings->reply->id) }}"
-                                                                            class="btn btn-secondary btn-sm mb-0 ms-1 me-1"
-                                                                            role="button" aria-pressed="true"
-                                                                            data-bs-toggle="tooltip"
-                                                                            data-bs-placement="top"
-                                                                            title="Confirm deletion">Yes</a>
-
-                                                                        <!-- No Button inside Modal -->
+                                                                        <a href="{{ route('admin.audit.finding.reply.delete', $reply->id) }}"
+                                                                            class="btn btn-secondary btn-sm">Yes</a>
                                                                         <button type="button"
-                                                                            class="btn btn-light btn-sm mb-0 ms-1 me-1"
-                                                                            data-bs-dismiss="modal"
-                                                                            data-bs-toggle="tooltip"
-                                                                            data-bs-placement="top"
-                                                                            title="Cancel deletion">No</button>
+                                                                            class="btn btn-light btn-sm"
+                                                                            data-bs-dismiss="modal">No</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endif
                                 </tbody>
                             </table>

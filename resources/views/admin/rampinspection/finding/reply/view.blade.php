@@ -147,7 +147,7 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Reply By
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Remarks By
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Reply By
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Remarks By
                                         </th>
@@ -163,105 +163,95 @@
 
                                 <tbody>
                                     @if ($rampInspectionFindings->rampInspectionReply)
-                                        <tr>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($rampInspectionFindings->rampInspectionReply->created_at)->format('d/M/y') }}
-                                            </td>
+                                        @foreach ($rampInspectionFindings->rampInspectionReply as $reply)
+                                            <tr>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ \Carbon\Carbon::parse($reply->created_at)->format('d/M/y') }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($rampInspectionFindings->rampInspectionReply->created_at)->format('h:i a') }}
-                                            </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ \Carbon\Carbon::parse($reply->created_at)->format('h:i a') }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $rampInspectionFindings->rampInspectionReply->reply }}
-                                            </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->reply }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm">
-                                                {{ $rampInspectionFindings->rampInspectionReply->reply_by }}
-                                            </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->reply_by }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm text-wrap">
-                                                {{ $rampInspectionFindings->rampInspectionReply->remarks }}
-                                            </td>
+                                                <td class="align-middle text-center text-sm text-wrap">
+                                                    {{ $reply->remarks }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm">
-                                                {{ $rampInspectionFindings->rampInspectionReply->remarks_by }}
-                                            </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->remarks_by }}
+                                                </td>
 
-                                            <td class="align-middle text-center text-sm">
-                                                {{ $rampInspectionFindings->rampInspectionReply->status }}
-                                            </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    {{ $reply->status }}
+                                                </td>
 
-                                            <td>
-                                                <div class="d-flex justify-content-center align-items-center">
-                                                    <div>
-                                                        <a href="{{ asset('storage/' . $rampInspectionFindings->rampInspectionReply->attachment) }}"
-                                                            target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="print">
-                                                            <span class="material-icons"
-                                                                style="font-size: 1.5rem;">print</span>
-                                                        </a>
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        @if ($reply->attachment)
+                                                            <a href="{{ asset('storage/' . $reply->attachment) }}"
+                                                                target="_blank"
+                                                                class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                                title="print">
+                                                                <span class="material-icons"
+                                                                    style="font-size: 1.5rem;">print</span>
+                                                            </a>
+                                                            <a href="{{ asset('storage/' . $reply->attachment) }}"
+                                                                target="_blank"
+                                                                class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                                title="download" download>
+                                                                <span class="material-icons"
+                                                                    style="font-size: 1.5rem;">download</span>
+                                                            </a>
+                                                        @else
+                                                            None
+                                                        @endif
                                                     </div>
-                                                    <div>
-                                                        <a href="{{ asset('storage/' . $rampInspectionFindings->rampInspectionReply->attachment) }}"
-                                                            target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="download" download>
-                                                            <span class="material-icons"
-                                                                style="font-size: 1.5rem;">download</span>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                                </td>
 
-                                            <td>
-                                                <div class="d-flex justify-content-center align-items-center">
-                                                    <div>
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center">
                                                         <a href="" target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
-                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="print">
+                                                            title="print">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
                                                         </a>
-                                                    </div>
 
-                                                    <div>
-                                                        <a href="{{ route('admin.rampinspection.finding.reply.edit', $rampInspectionFindings->rampInspectionReply->id) }}"
+                                                        <a href="{{ route('admin.rampinspection.finding.reply.edit', $reply->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
-                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="update">
+                                                            title="update">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">update</span>
                                                         </a>
-                                                    </div>
 
-
-                                                    <div>
+                                                        <!-- Delete Button with Modal -->
                                                         <button type="button" class="btn bg-transparent btn-sm m-0"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#modal-delete-{{ $rampInspectionFindings->rampInspectionReply->id }}"
-                                                            data-bs-toggle="tooltip" data-bs-placement="bottom"
+                                                            data-bs-target="#modal-delete-{{ $reply->id }}"
                                                             title="delete">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">delete</span>
                                                         </button>
 
-                                                        <!-- Modal Structure -->
-                                                        <div class="modal fade"
-                                                            id="modal-delete-{{ $rampInspectionFindings->rampInspectionReply->id }}"
+                                                        <!-- Modal -->
+                                                        <div class="modal fade" id="modal-delete-{{ $reply->id }}"
                                                             tabindex="-1" role="dialog"
-                                                            aria-labelledby="modal-delete-{{ $rampInspectionFindings->rampInspectionReply->id }}"
+                                                            aria-labelledby="modal-delete-{{ $reply->id }}"
                                                             aria-hidden="true">
-                                                            <div class="modal-dialog modal-dialog-centered modal-"
+                                                            <div class="modal-dialog modal-dialog-centered"
                                                                 role="document">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h6 class="modal-title font-weight-normal"
-                                                                            id="modal-title-default">Reply Deletion</h6>
+                                                                        <h6 class="modal-title font-weight-normal">Reply
+                                                                            Deletion</h6>
                                                                         <button type="button" class="btn-close text-dark"
                                                                             data-bs-dismiss="modal" aria-label="Close">
                                                                             <span aria-hidden="true">×</span>
@@ -271,29 +261,19 @@
                                                                         <p>Do you want to remove the document?</p>
                                                                     </div>
                                                                     <div class="modal-footer">
-                                                                        <!-- Yes Button with Tooltip -->
-                                                                        <a href="{{ route('admin.rampinspection.finding.reply.delete', $rampInspectionFindings->rampInspectionReply->id) }}"
-                                                                            class="btn btn-secondary btn-sm mb-0 ms-1 me-1"
-                                                                            role="button" aria-pressed="true"
-                                                                            data-bs-toggle="tooltip"
-                                                                            data-bs-placement="top"
-                                                                            title="Confirm deletion">Yes</a>
-
-                                                                        <!-- No Button inside Modal -->
+                                                                        <a href="{{ route('admin.rampinspection.finding.reply.delete', $reply->id) }}"
+                                                                            class="btn btn-secondary btn-sm mb-0 ms-1 me-1">Yes</a>
                                                                         <button type="button"
                                                                             class="btn btn-light btn-sm mb-0 ms-1 me-1"
-                                                                            data-bs-dismiss="modal"
-                                                                            data-bs-toggle="tooltip"
-                                                                            data-bs-placement="top"
-                                                                            title="Cancel deletion">No</button>
+                                                                            data-bs-dismiss="modal">No</button>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     @endif
                                 </tbody>
                             </table>

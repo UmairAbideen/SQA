@@ -25,7 +25,7 @@ class RampInspectionFinding extends Model
 
     public function rampInspectionReply()
     {
-        return $this->hasOne(RampInspectionReply::class);
+        return $this->hasMany(RampInspectionReply::class);
     }
 }
 

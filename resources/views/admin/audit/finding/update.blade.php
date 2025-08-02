@@ -28,7 +28,8 @@
                                 Back</a>
                         </div>
 
-                        <form class='px-3' action="{{ route('admin.audit.finding.update', $finding->id) }}" method="post" enctype="multipart/form-data">
+                        <form class='px-3' action="{{ route('admin.audit.finding.update', $finding->id) }}" method="post"
+                            enctype="multipart/form-data">
                             @csrf
 
 
@@ -106,7 +107,6 @@
                                     <div class="input-group input-group-static mb-4">
                                         <label>Repeated Finding</label>
                                         <select name="repeated_finding" class="form-control">
-                                            <option value="" disabled>Select an option</option>
                                             <option value="Yes"
                                                 {{ old('repeated_finding', $finding->repeated_finding) == 'Yes' ? 'selected' : '' }}>
                                                 Yes</option>
@@ -132,18 +132,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Validity Date -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Validity Date</label>
-                                        <input type="date" name="validity_date" class="form-control"
-                                            value="{{ old('validity_date', $finding->validity_date) }}">
-                                        @error('validity_date')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Auditor -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
@@ -160,13 +148,20 @@
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Status</label>
-                                        <input type="text" name="status" class="form-control"
-                                            value="{{ old('status', $finding->status) }}">
+                                        <select name="status" class="form-control">
+                                            <option value="Open"
+                                                {{ old('status', $finding->status) != 'Close' ? 'selected' : '' }}>Open
+                                            </option>
+                                            <option value="Close"
+                                                {{ old('status', $finding->status) == 'Close' ? 'selected' : '' }}>Close
+                                            </option>
+                                        </select>
                                         @error('status')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
+
 
                                 <div class="col-md-6 px-3">
                                     <div class="align-self-center my-4">

@@ -108,7 +108,7 @@
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Finding
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Target
-                                            Dates</th>
+                                            Date</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Finding #
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Level</th>
@@ -116,55 +116,49 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Nature
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Validity
-                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Auditor
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Status
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">
+                                            Replies</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($audits->finding as $finding)
-                                        <tr>
+                                        <tr class="clickable-row"
+                                            data-href="{{ route('admin.audit.finding.reply.view', $finding->id) }}">
+
                                             <td class="align-middle text-center text-sm">{{ $finding->rule_reference }}
                                             </td>
                                             <td class="align-middle text-center text-sm text-wrap">
                                                 {{ $finding->finding }}</td>
+
                                             <td class="align-middle text-center text-sm">
                                                 {{ \Carbon\Carbon::parse($finding->target_dates)->format('d-m-Y') }}
                                             </td>
-                                            <td class="align-middle text-center text-sm">{{ $finding->finding_number }}
+                                            <td class="align-middle text-center text-sm">
+                                                {{ $finding->finding_number }}
                                             </td>
+
                                             <td class="align-middle text-center text-sm">{{ $finding->finding_level }}
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 {{ $finding->repeated_finding }}</td>
                                             <td class="align-middle text-center text-sm text-wrap">
                                                 {{ $finding->nature_of_finding }}</td>
-                                            <td class="align-middle text-center text-sm">
-                                                {{ \Carbon\Carbon::parse($finding->validity_date)->format('d-m-Y') }}
-                                            </td>
+
                                             <td class="align-middle text-center text-sm">{{ $finding->auditor }}</td>
 
-
-                                            <td class="align-middle text-center text-sm">
-                                                <div class="d-flex justify-content-center align-items-center mt-3">
-                                                    <a href="{{ route('admin.audit.finding.reply.view', $finding->id) }}"
-                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button"
-                                                        aria-pressed="true">
-                                                        {{ $finding->status }}
-                                                    </a>
-                                                </div>
-                                            </td>
+                                            <td class="align-middle text-center text-sm">{{ $finding->status }}</td>
 
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    <div>
+                                                    @if ($finding->attachment)
                                                         <a href="{{ asset('storage/' . $finding->attachment) }}"
                                                             target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
@@ -173,9 +167,6 @@
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
                                                         </a>
-                                                    </div>
-
-                                                    <div>
                                                         <a href="{{ asset('storage/' . $finding->attachment) }}"
                                                             target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
@@ -184,7 +175,19 @@
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">download</span>
                                                         </a>
-                                                    </div>
+                                                    @else
+                                                        None
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            <td class="align-middle text-center text-sm">
+                                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                                    <a href="{{ route('admin.audit.finding.reply.view', $finding->id) }}"
+                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button"
+                                                        aria-pressed="true">
+                                                        Views
+                                                    </a>
                                                 </div>
                                             </td>
 
@@ -193,8 +196,8 @@
 
                                                     <div>
                                                         <a href="" target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
                                                             data-bs-placement="bottom" title="print">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
@@ -276,4 +279,22 @@
             </div>
         </div>
     </div>
+
+    {{-- To make rows cilckable and prevent icons link to be effected --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.clickable-row').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    // Prevent row click if a link or button inside was clicked
+                    if (e.target.closest('a') || e.target.closest('button') || e.target.closest(
+                            '.material-icons')) {
+                        return;
+                    }
+
+                    // Otherwise, navigate to row's href
+                    window.location = this.dataset.href;
+                });
+            });
+        });
+    </script>
 @endsection

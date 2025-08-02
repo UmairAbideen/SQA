@@ -75,23 +75,20 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Status
                                         </th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Findings
+                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($rampInspections as $rampInspection)
-                                        <tr>
+                                        <tr class="clickable-row"
+                                            data-href="{{ route('admin.rampinspection.finding.view', $rampInspection->id) }}">
                                             <td class="align-middle text-center text-sm">{{ $loop->iteration }}</td>
 
                                             <td class="align-middle text-center text-sm">
-                                                <div class="d-flex justify-content-center align-items-center mt-3">
-                                                    <a href="{{ route('admin.rampinspection.finding.view', $rampInspection->id) }}"
-                                                        class="btn bg-gradient-secondary px-3 py-2" role="button"
-                                                        aria-pressed="true">
-                                                        {{ $rampInspection->aircraft_reg }}
-                                                    </a>
-                                                </div>
+                                                {{ $rampInspection->aircraft_reg }}
                                             </td>
 
                                             <td class="align-middle text-center text-sm">
@@ -117,6 +114,22 @@
                                             </td>
                                             <td class="align-middle text-center text-sm">{{ $rampInspection->status }}</td>
 
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center mt-3">
+                                                    <a href="{{ route('admin.rampinspection.finding.view', $rampInspection->id) }}"
+                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button">
+                                                        All ({{ $rampInspection->total_findings }})
+                                                    </a>
+                                                    <a href="{{ route('admin.rampinspection.finding.view.open', $rampInspection->id) }}"
+                                                        class="btn bg-gradient-success ms-1 px-3 py-2" role="button">
+                                                        Open ({{ $rampInspection->open_findings }})
+                                                    </a>
+                                                    <a href="{{ route('admin.rampinspection.finding.view.close', $rampInspection->id) }}"
+                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button">
+                                                        Close ({{ $rampInspection->close_findings }})
+                                                    </a>
+                                                </div>
+                                            </td>
 
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center">
@@ -151,7 +164,8 @@
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <h6 class="modal-title font-weight-normal"
-                                                                            id="modal-title-default">Aircraft Inpection Deletion
+                                                                            id="modal-title-default">Aircraft Inpection
+                                                                            Deletion
                                                                         </h6>
                                                                         <button type="button" class="btn-close text-dark"
                                                                             data-bs-dismiss="modal" aria-label="Close">
@@ -167,7 +181,8 @@
                                                                         <a href="{{ route('admin.rampinspection.delete', $rampInspection->id) }}"
                                                                             class="btn btn-secondary btn-sm mb-0 ms-1 me-1"
                                                                             role="button" aria-pressed="true"
-                                                                            data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                            data-bs-toggle="tooltip"
+                                                                            data-bs-placement="top"
                                                                             title="Confirm deletion">Yes</a>
 
                                                                         <!-- No Button inside Modal -->
@@ -194,4 +209,21 @@
             </div>
         </div>
     </div>
+    {{-- To make rows cilckable and prevent icons link to be effected --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.clickable-row').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    // Prevent row click if a link or button inside was clicked
+                    if (e.target.closest('a') || e.target.closest('button') || e.target.closest(
+                            '.material-icons')) {
+                        return;
+                    }
+
+                    // Otherwise, navigate to row's href
+                    window.location = this.dataset.href;
+                });
+            });
+        });
+    </script>
 @endsection

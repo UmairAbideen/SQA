@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('audit_replies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('audit_finding_id')->references('id')->on('audit_findings')
-            ->onDelete('cascade')->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->date('date')->nullable(); // Date of reply
             $table->time('time')->nullable(); // Time of reply
             $table->text('reply')->nullable(); // Reply content

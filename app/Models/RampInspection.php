@@ -29,8 +29,18 @@ class RampInspection extends Model
         return $this->hasMany(RampInspectionFinding::class);
     }
 
-    // public function Number()
-    // {
-    //     return $this->hasOneThrough(Contact::class,Company::class);
-    // }
+    public function getTotalFindingsAttribute()
+    {
+        return $this->rampInspectionFinding->count();
+    }
+
+    public function getOpenFindingsAttribute()
+    {
+        return $this->rampInspectionFinding->where('status', 'Open')->count();
+    }
+
+    public function getCloseFindingsAttribute()
+    {
+        return $this->rampInspectionFinding->where('status', 'Close')->count();
+    }
 }

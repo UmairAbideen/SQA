@@ -89,32 +89,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Status -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Status</label>
-                                        <input type="text" name="status" class="form-control"
-                                            value="{{ old('status') }}">
-                                        @error('status')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-
-                                <!-- Attachment -->
-                                {{-- <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Attachment</label>
-                                        <input type="text" name="attachment" class="form-control"
-                                            value="{{ old('attachment') }}">
-                                        @error('attachment')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div> --}}
-
-
                                 <div class="col-md-6 px-3">
                                     <div class="align-self-center my-4">
                                         <input type="file" name="attachment" class="btn btn-sm bg-gradient-secondary">
@@ -123,8 +97,6 @@
                                         @enderror
                                     </div>
                                 </div>
-
-
 
                                 <!-- Hidden Field-->
                                 <div class="col-md-6 px-3">

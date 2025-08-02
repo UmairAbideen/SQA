@@ -28,8 +28,8 @@
                                 Back</a>
                         </div>
 
-                        <form class='px-3'  action="{{ route('admin.audit.finding.reply.update', $auditReply->id) }}" method="post"
-                            enctype="multipart/form-data">
+                        <form class='px-3' action="{{ route('admin.audit.finding.reply.update', $auditReply->id) }}"
+                            method="post" enctype="multipart/form-data">
                             @csrf
 
                             @if (session('status'))
@@ -133,12 +133,6 @@
                                         @error('attachment')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
-                                        <!-- Display current attachment -->
-                                        {{-- @if ($auditReply->attachment)
-                                            <p class="mt-2"><a
-                                                    href="{{ asset('path/to/attachments/' . $auditReply->attachment) }}"
-                                                    target="_blank">View Current Attachment</a></p>
-                                        @endif --}}
                                     </div>
                                 </div>
 
@@ -176,36 +170,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Closed By -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closed By</label>
-                                        <input type="text" name="closed_by" class="form-control"
-                                            value="{{ old('closed_by', $auditReply->closed_by) }}">
-                                        @error('closed_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Final Remarks -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Final Remarks</label>
                                         <textarea name="final_remarks" class="form-control" rows="1">{{ old('final_remarks', $auditReply->final_remarks) }}</textarea>
                                         @error('final_remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Status -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Status</label>
-                                        <input type="text" name="status" class="form-control"
-                                            value="{{ old('status', $auditReply->status) }}">
-                                        @error('status')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -229,6 +199,43 @@
                                         <label>Closing Remarks</label>
                                         <textarea name="closing_remarks" class="form-control" rows="1">{{ old('closing_remarks', $auditReply->closing_remarks) }}</textarea>
                                         @error('closing_remarks')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Closed By -->
+                                <div class="col-md-6 px-3">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label>Closed By</label>
+                                        <select name="closed_by" class="form-control">
+                                            <option value="">-- Select --</option>
+                                            <option value="{{ Auth::user()->username }}"
+                                                {{ old('closed_by', $auditReply->closed_by) == Auth::user()->username ? 'selected' : '' }}>
+                                                {{ Auth::user()->username }}
+                                            </option>
+                                        </select>
+                                        @error('closed_by')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <!-- Status -->
+                                <div class="col-md-6 px-3">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label>Status</label>
+                                        <select name="status" class="form-control">
+                                            <option value="Open"
+                                                {{ old('status', $auditReply->status) != 'Close' ? 'selected' : '' }}>
+                                                Open
+                                            </option>
+                                            <option value="Close"
+                                                {{ old('status', $auditReply->status) == 'Close' ? 'selected' : '' }}>
+                                                Close
+                                            </option>
+                                        </select>
+                                        @error('status')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>

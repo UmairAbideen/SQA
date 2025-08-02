@@ -76,7 +76,7 @@
 
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
-                                        <label>Section</label>
+                                        <label>Department / Section</label>
                                         <input type="text" name="section" class="form-control"
                                             value="{{ old('section') }}">
                                         @error('section')

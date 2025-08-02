@@ -28,8 +28,8 @@
                                 Back</a>
                         </div>
 
-                        <form class='px-3' action="{{ route('admin.audit.update', $audit->id) }}"
-                            method="post" enctype="multipart/form-data">
+                        <form class='px-3' action="{{ route('admin.audit.update', $audit->id) }}" method="post"
+                            enctype="multipart/form-data">
                             @csrf
 
                             @if (session('status'))
@@ -108,6 +108,23 @@
                                     </div>
                                 </div>
 
+                                <!-- Status -->
+                                <div class="col-md-6 px-3">
+                                    <div class="input-group input-group-static mb-4">
+                                        <label>Status</label>
+                                        <select name="status" class="form-control">
+                                            <option value="Open"
+                                                {{ old('status', $audit->status) != 'Close' ? 'selected' : '' }}>Open
+                                            </option>
+                                            <option value="Close"
+                                                {{ old('status', $audit->status) == 'Close' ? 'selected' : '' }}>Close
+                                            </option>
+                                        </select>
+                                        @error('status')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
 
                                 <div class="mt-3">
                                     <button type="submit" class="btn bg-gradient-success">Submit</button>

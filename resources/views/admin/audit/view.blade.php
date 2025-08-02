@@ -60,13 +60,17 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Findings
                                         </th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Status
+                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($audits as $audit)
-                                        <tr>
+                                        <tr class="clickable-row"
+                                            data-href="{{ route('admin.audit.finding.view', $audit->id) }}">
+
                                             <td class="align-middle text-center text-sm">{{ $loop->iteration }}</td>
                                             <td class="align-middle text-center text-sm">{{ $audit->organization }}</td>
                                             <td class="align-middle text-center text-sm">{{ $audit->audit_reference }}</td>
@@ -80,22 +84,21 @@
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center mt-3">
                                                     <a href="{{ route('admin.audit.finding.view', $audit->id) }}"
-                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button"
-                                                        aria-pressed="true">
-                                                        Total
+                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button">
+                                                        All ({{ $audit->total_findings }})
                                                     </a>
-                                                    <a href=""
-                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button"
-                                                        aria-pressed="true">
-                                                        Open
+                                                    <a href="{{ route('admin.audit.finding.view.open', $audit->id) }}"
+                                                        class="btn bg-gradient-success ms-1 px-3 py-2" role="button">
+                                                        Open ({{ $audit->open_findings }})
                                                     </a>
-                                                    <a href=""
-                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button"
-                                                        aria-pressed="true">
-                                                        Close
+                                                    <a href="{{ route('admin.audit.finding.view.close', $audit->id) }}"
+                                                        class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button">
+                                                        Close ({{ $audit->close_findings }})
                                                     </a>
                                                 </div>
                                             </td>
+
+                                            <td class="align-middle text-center text-sm">{{ $audit->status }}</td>
 
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center">
@@ -153,7 +156,8 @@
                                                                         <!-- No Button inside Modal -->
                                                                         <button type="button"
                                                                             class="btn btn-light btn-sm mb-0 ms-1 me-1"
-                                                                            data-bs-dismiss="modal" data-bs-toggle="tooltip"
+                                                                            data-bs-dismiss="modal"
+                                                                            data-bs-toggle="tooltip"
                                                                             data-bs-placement="top"
                                                                             title="Cancel deletion">No</button>
                                                                     </div>
@@ -174,4 +178,22 @@
             </div>
         </div>
     </div>
+
+    {{-- To make rows cilckable and prevent icons link to be effected --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.clickable-row').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    // Prevent row click if a link or button inside was clicked
+                    if (e.target.closest('a') || e.target.closest('button') || e.target.closest(
+                            '.material-icons')) {
+                        return;
+                    }
+
+                    // Otherwise, navigate to row's href
+                    window.location = this.dataset.href;
+                });
+            });
+        });
+    </script>
 @endsection
