@@ -4,22 +4,33 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\Audit;
 use App\Models\AuditReply;
+use App\Imports\AuditImport;
 use App\Models\AuditFinding;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Exports\AuditExport;
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
+use App\Imports\AuditFindingImport;
+use App\Exports\AuditFindingExport;
+use App\Imports\AuditReplyImport;
+use App\Exports\AuditReplyExport;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AuditFindingReminderMail;
+
+
 
 class AuditController extends Controller
 {
 
-    // ================================ Audit Findings ======================================
+    // ================================ Audit  ======================================
 
     public function view()
     {
         $audits = Audit::with('finding')->get();
         return view('admin.audit.view', compact('audits'));
     }
-
 
 
     public function form()
@@ -95,6 +106,74 @@ class AuditController extends Controller
         $audit->delete();
         return back()->with('status', 'Audit record has been removed.');
     }
+
+    public function generatePdf($id)
+    {
+        $audit = Audit::findOrFail($id);
+
+        return Pdf::loadView('admin.audit.pdf', compact('audit'))
+            ->setPaper('a4', 'landscape')
+            ->stream('Audit.pdf');
+    }
+
+    public function downloadPdf($id)
+    {
+        $audit = Audit::findOrFail($id);
+
+        return Pdf::loadView('admin.audit.pdf', compact('audit'))
+            ->setPaper('a4', 'landscape')
+            ->download('Audit.pdf');
+    }
+
+    public function exportAuditsByDate(Request $request)
+    {
+        $start = $request->input('start_date');
+        $end = $request->input('end_date');
+
+        if (!$start || !$end) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        $audits = Audit::whereBetween('audit_date', [$start, $end])
+            ->orderBy('audit_date', 'asc')
+            ->get();
+
+        if ($audits->isEmpty()) {
+            return redirect()->back()->with('error', 'No audits found in the selected date range.');
+        }
+
+        return Pdf::loadView('admin.audit.range_pdf', compact('audits', 'start', 'end'))
+            ->setPaper('a4', 'landscape')
+            ->stream('Audits_' . $start . '_to_' . $end . '.pdf');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new AuditImport, $request->file('excel_file'));
+
+        return redirect()->back()->with('success', 'Audit records imported successfully.');
+    }
+
+    public function exportExcelByDate(Request $request)
+    {
+        $start = $request->input('start_date');
+        $end = $request->input('end_date');
+
+        if (!$start || !$end) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        return Excel::download(new AuditExport($start, $end), 'Audits_' . $start . '_to_' . $end . '.xlsx');
+    }
+
+
+
+
+
 
 
 
@@ -210,7 +289,6 @@ class AuditController extends Controller
             'finding_level' => 'nullable|string|max:255',
             'repeated_finding' => 'required',
             'nature_of_finding' => 'nullable|string|max:255',
-            'validity_date' => 'nullable|date',
             'auditor' => 'nullable|string|max:255',
             'status' => 'required|string|max:255',
         ]);
@@ -243,7 +321,6 @@ class AuditController extends Controller
             'finding_level' => $request->finding_level,
             'repeated_finding' => $request->repeated_finding,
             'nature_of_finding' => $request->nature_of_finding,
-            'validity_date' => $request->validity_date,
             'auditor' => $request->auditor,
             'status' => $request->status,
             'attachment' => $attachmentPath, // Save the updated attachment path
@@ -261,6 +338,112 @@ class AuditController extends Controller
 
         return back()->with('status', 'Audit Finding has been deleted successfully.');
     }
+
+    public function printAuditFindings($findingId)
+    {
+        $finding = AuditFinding::with('audit')->findOrFail($findingId);
+        $audit = $finding->audit;
+
+        $pdf = Pdf::loadView('admin.audit.finding.pdf', compact('audit', 'finding'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('AuditFindings.pdf');
+    }
+
+
+    public function downloadAuditFindings($findingId)
+    {
+        $finding = AuditFinding::with('audit')->findOrFail($findingId);
+        $audit = $finding->audit;
+
+        $pdf = Pdf::loadView('admin.audit.finding.pdf', compact('audit', 'finding'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('AuditFindings.pdf');
+    }
+
+
+    public function exportAuditFindingsByDateRange(Request $request, $auditId)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        $audit = Audit::with('finding')->findOrFail($auditId);
+
+        $findings = $audit->finding()
+            ->whereBetween('target_dates', [$startDate, $endDate])
+            ->get();
+
+        if ($findings->isEmpty()) {
+            return redirect()->back()->with('error', 'No findings found for this audit in the selected date range.');
+        }
+
+        $pdf = Pdf::loadView('admin.audit.finding.range_pdf', compact('findings', 'startDate', 'endDate', 'audit'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('AuditFindingsRange.pdf');
+    }
+
+    public function importAuditFindings(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+            'audit_id'   => 'required|exists:audits,id',
+        ]);
+
+        Excel::import(new AuditFindingImport($request->audit_id), $request->file('excel_file'));
+
+        return redirect()->back()->with('success', 'Findings imported successfully.');
+    }
+
+
+    public function exportFindingsByDate(Request $request)
+    {
+        $start = $request->input('start_date');
+        $end = $request->input('end_date');
+
+        if (!$start || !$end) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        return Excel::download(new AuditFindingExport($start, $end), "Findings_{$start}_to_{$end}.xlsx");
+    }
+
+    public function sendFindingEmail(Request $request, $findingId)
+    {
+        $request->validate([
+            'to' => 'required|email',
+            'cc' => 'nullable|string',
+            'bcc' => 'nullable|string',
+            'subject' => 'required|string|max:255',
+            'body' => 'required|string',
+        ]);
+
+        $finding = AuditFinding::with('audit')->findOrFail($findingId);
+
+        $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
+        $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
+
+        Mail::to($request->to)
+            ->cc($cc)
+            ->bcc($bcc)
+            ->queue(new AuditFindingReminderMail($finding, $request->subject, $request->body));
+
+        return back()->with('status', 'Email sent successfully.');
+    }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -421,5 +604,81 @@ class AuditController extends Controller
         $auditReply->delete();
 
         return back()->with('status', 'Reply has been removed.');
+    }
+
+    public function printAuditReplies($replyId)
+    {
+        $reply = AuditReply::with('auditFinding.audit')->findOrFail($replyId);
+        $finding = $reply->auditFinding;
+        $audit = $finding->audit;
+
+        $pdf = Pdf::loadView('admin.audit.finding.reply.pdf', compact('audit', 'finding', 'reply'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('AuditFindingReply.pdf');
+    }
+
+    public function downloadAuditReplies($replyId)
+    {
+        $reply = AuditReply::with('auditFinding.audit')->findOrFail($replyId);
+        $finding = $reply->auditFinding;
+        $audit = $finding->audit;
+
+        $pdf = Pdf::loadView('admin.audit.finding.reply.pdf', compact('audit', 'finding', 'reply'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('AuditFindingReply.pdf');
+    }
+
+
+    public function exportRepliesOfFindingByDateRange(Request $request, $findingId)
+    {
+        $startDate = $request->query('start_date');
+        $endDate   = $request->query('end_date');
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->with('error', 'Please select start and end dates.');
+        }
+
+        // Get finding and related replies in date range
+        $finding = AuditFinding::with(['audit', 'reply' => function ($query) use ($startDate, $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }])->findOrFail($findingId);
+
+        $replies = $finding->reply;
+
+        if ($replies->isEmpty()) {
+            return redirect()->back()->with('error', 'No replies found in the selected date range.');
+        }
+
+        $audit = $finding->audit;
+
+        return Pdf::loadView('admin.audit.finding.reply.range_pdf', compact('audit', 'finding', 'replies', 'startDate', 'endDate'))
+            ->setPaper('a4', 'landscape')
+            ->stream('FindingRepliesRange.pdf');
+    }
+
+    public function importAuditReplies(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+            'finding_id' => 'required|exists:audit_findings,id',
+        ]);
+
+        Excel::import(new AuditReplyImport($request->finding_id), $request->file('excel_file'));
+
+        return redirect()->back()->with('success', 'Replies imported successfully.');
+    }
+
+    public function exportRepliesExcel(Request $request, $findingId)
+    {
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->with('error', 'Please select start and end dates.');
+        }
+
+        return Excel::download(new AuditReplyExport($findingId, $startDate, $endDate), 'AuditReplies.xlsx');
     }
 }

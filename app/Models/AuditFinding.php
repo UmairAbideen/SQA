@@ -10,6 +10,7 @@ class AuditFinding extends Model
     use HasFactory;
 
     protected $fillable = [
+        'audit_id', // belongs to audit table
         'rule_reference',
         'attachment',
         'finding',
@@ -18,10 +19,8 @@ class AuditFinding extends Model
         'finding_level',
         'repeated_finding',
         'nature_of_finding',
-        'validity_date',
         'auditor',
         'status',
-
     ];
 
     public function audit()

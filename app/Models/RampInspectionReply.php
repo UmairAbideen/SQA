@@ -10,6 +10,7 @@ class RampInspectionReply extends Model
     use HasFactory;
 
     protected $fillable = [
+        'ramp_inspection_finding_id',
         'reply', // Reply content
         'reply_by', // Person who gave the reply
         'remarks', // Additional remarks

@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Manual;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class AdminController extends Controller
 {
 
     public function dashboard()
     {
-        return view('admin.dashboard');
+        $manual = Manual::get();
+        return view('admin.documents.manual.view', ['manuals' => $manual]);
     }
 }

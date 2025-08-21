@@ -23,16 +23,126 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end pe-3 pt-4">
-                        <a href="{{ route('admin.rampinspection.form') }}" class="btn bg-gradient-success" role="button"
-                            aria-pressed="true">+
-                            Add New</a>
+                    <div class="row align-items-center justify-content-between px-3 pt-4 pb-5">
+                        {{-- Centered Date Filters + Export Button --}}
+                        <div class="col-md-10 d-flex justify-content-center gap-4 flex-wrap">
+                            {{-- Date From --}}
+                            <div class="col-auto">
+                                <div class="input-group input-group-static">
+                                    <label class="ms-0 mb-1">From</label>
+                                    <input type="date" name="start_date" class="form-control"
+                                        value="{{ request('start_date') }}" placeholder="Start Date">
+                                </div>
+                            </div>
+
+                            {{-- Date To --}}
+                            <div class="col-auto">
+                                <div class="input-group input-group-static">
+                                    <label class="ms-0 mb-1">To</label>
+                                    <input type="date" name="end_date" class="form-control"
+                                        value="{{ request('end_date') }}" placeholder="End Date">
+                                </div>
+                            </div>
+
+                            {{-- Export Button --}}
+                            <div class="col-auto pt-3">
+                                <div class="input-group input-group-static">
+                                    <button type="button" class="btn bg-gradient-success btn-sm" onclick="exportRampPdf()">
+                                        Export PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Right-Aligned Add Button --}}
+                        <div class="col-md-2 d-flex justify-content-end">
+                            <!-- Right: Import Button -->
+                            <button type="button" class="btn bg-gradient-success btn-sm me-2" data-bs-toggle="modal"
+                                data-bs-target="#modal-import-staff" title="Import Staff & SES">
+                                Excel
+                            </button>
+
+                            <a href="{{ route('admin.rampinspection.form') }}" class="btn bg-gradient-success"
+                                role="button" aria-pressed="true">+
+                                Add New</a>
+                        </div>
                     </div>
 
-                    @if (session('status'))
+
+
+                    <!-- Import Modal -->
+                    <div class="modal fade" id="modal-import-staff" tabindex="-1" role="dialog"
+                        aria-labelledby="modal-import-staff" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title font-weight-normal" id="modal-title-import">Audit Import / Export
+                                    </h6>
+                                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="overflow-auto" style="max-height: 60vh; padding-right: 5px;">
+
+                                        {{-- === RAMP INSPECTION IMPORT === --}}
+                                        <form action="{{ route('admin.rampinspection.import') }}" method="post"
+                                            enctype="multipart/form-data" class="mb-3">
+                                            @csrf
+                                            <label class="form-label mb-1">Select Excel file to import Ramp
+                                                Inspections</label>
+                                            <div class="align-self-center pt-3">
+                                                <input type="file" name="excel_file"
+                                                    class="btn btn-sm bg-gradient-secondary" required>
+                                                <button type="submit" class="btn bg-gradient-success">Import</button>
+                                            </div>
+                                        </form>
+
+                                        {{-- === RAMP INSPECTION EXPORT === --}}
+                                        <div class="col-md-10 d-flex gap-4 flex-wrap pt-3">
+                                            <div class="col-auto">
+                                                <div class="input-group input-group-static">
+                                                    <label class="ms-0 mb-1">From</label>
+                                                    <input type="date" id="ramp_excel_start_date" class="form-control"
+                                                        placeholder="Start Date">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="input-group input-group-static">
+                                                    <label class="ms-0 mb-1">To</label>
+                                                    <input type="date" id="ramp_excel_end_date" class="form-control"
+                                                        placeholder="End Date">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-auto pt-3">
+                                                <button type="button" class="btn bg-gradient-success"
+                                                    onclick="exportRampExcel()">
+                                                    Export Excel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light btn-sm"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                    @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
-                                <small>{{ session('status') }}</small>
+                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                                role="alert">
+                                <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -42,10 +152,11 @@
 
                     <div class="card-body ps-3 pe-2 pb-5 pt-0">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0" id="myTable">
                                 <thead>
                                     <tr>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">S No.</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">S No.
+                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Aircraft<br>
                                             Registration</th>
@@ -60,7 +171,8 @@
                                             Station</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Destination</th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Flight No.
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Flight
+                                            No.
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Bay No.
                                         </th>
@@ -101,18 +213,21 @@
                                                 {{ $rampInspection->aircraft_type }}</td>
                                             <td class="align-middle text-center text-sm">
                                                 {{ $rampInspection->arrival_station }}</td>
-                                            <td class="align-middle text-center text-sm">{{ $rampInspection->destination }}
+                                            <td class="align-middle text-center text-sm">
+                                                {{ $rampInspection->destination }}
                                             </td>
                                             <td class="align-middle text-center text-sm">{{ $rampInspection->flight_no }}
                                             </td>
-                                            <td class="align-middle text-center text-sm">{{ $rampInspection->bay_no }}</td>
+                                            <td class="align-middle text-center text-sm">{{ $rampInspection->bay_no }}
+                                            </td>
                                             <td class="align-middle text-center text-sm">
                                                 {{ $rampInspection->inspection_ref_no }}</td>
                                             <td class="align-middle text-center text-sm">
                                                 {{ $rampInspection->inspection_type }}</td>
                                             <td class="align-middle text-center text-sm">{{ $rampInspection->inspector }}
                                             </td>
-                                            <td class="align-middle text-center text-sm">{{ $rampInspection->status }}</td>
+                                            <td class="align-middle text-center text-sm">{{ $rampInspection->status }}
+                                            </td>
 
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center mt-3">
@@ -135,9 +250,31 @@
                                                 <div class="d-flex justify-content-center align-items-center">
 
                                                     <div>
+                                                        <a href="{{ route('admin.rampinspection.print.pdf', $rampInspection->id) }}"
+                                                            target="_blank"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
+                                                            data-bs-placement="bottom" title="print">
+                                                            <span class="material-icons"
+                                                                style="font-size: 1.5rem;">print</span>
+                                                        </a>
+                                                    </div>
+
+                                                    <div>
+                                                        <a href="{{ route('admin.rampinspection.download.pdf', $rampInspection->id) }}"
+                                                            target="_blank"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
+                                                            data-bs-placement="bottom" title="download" download>
+                                                            <span class="material-icons"
+                                                                style="font-size: 1.5rem;">download</span>
+                                                        </a>
+                                                    </div>
+
+                                                    <div>
                                                         <a href="{{ route('admin.rampinspection.edit', $rampInspection->id) }}"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
                                                             data-bs-placement="bottom" title="update">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">update</span>
@@ -155,8 +292,9 @@
                                                         </button>
 
                                                         <!-- Modal Structure -->
-                                                        <div class="modal fade" id="modal-delete-{{ $rampInspection->id }}"
-                                                            tabindex="-1" role="dialog"
+                                                        <div class="modal fade"
+                                                            id="modal-delete-{{ $rampInspection->id }}" tabindex="-1"
+                                                            role="dialog"
                                                             aria-labelledby="modal-delete-{{ $rampInspection->id }}"
                                                             aria-hidden="true">
                                                             <div class="modal-dialog modal-dialog-centered modal-"
@@ -211,6 +349,27 @@
     </div>
     {{-- To make rows cilckable and prevent icons link to be effected --}}
     <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+            });
+        });
+
+        $(document).ready(function() {
+            var table = $('#myTable').DataTable();
+
+            // Add Bootstrap spacing classes
+            $('#myTable_length').addClass('mt-0 mb-2 ms-2'); // entries
+            $('#myTable_filter').addClass('mt-0 mb-2 me-2'); // Search box
+            $('#myTable_paginate').addClass('mt-3 me-2'); // Pagination
+            $('#myTable_info').addClass('mt-3 ms-3'); // Info text
+        });
+
+
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.clickable-row').forEach(function(row) {
                 row.addEventListener('click', function(e) {
@@ -225,5 +384,31 @@
                 });
             });
         });
+
+        function exportRampPdf() {
+            const startDate = document.querySelector('input[name="start_date"]').value;
+            const endDate = document.querySelector('input[name="end_date"]').value;
+
+            if (!startDate || !endDate) {
+                alert('Please select both Start Date and End Date.');
+                return;
+            }
+
+            const url = `{{ route('admin.rampinspection.range.pdf') }}?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        }
+
+        function exportRampExcel() {
+            const startDate = document.getElementById('ramp_excel_start_date').value;
+            const endDate = document.getElementById('ramp_excel_end_date').value;
+
+            if (!startDate || !endDate) {
+                alert("Please select both start and end dates.");
+                return;
+            }
+
+            const url = `/admin/rampinspection/export/excel?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        }
     </script>
 @endsection

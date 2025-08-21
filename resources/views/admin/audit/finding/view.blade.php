@@ -49,27 +49,23 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="align-middle text-center text-sm">{{ $audits->organization }}</td>
-                                        <td class="align-middle text-center text-sm">{{ $audits->audit_reference }}</td>
-                                        <td class="align-middle text-center text-sm">{{ $audits->audit_type }}</td>
-                                        <td class="align-middle text-center text-sm">{{ $audits->section }}</td>
-                                        <td class="align-middle text-center text-sm">{{ $audits->location }}</td>
-                                        <td class="align-middle text-center text-sm">
-                                            {{ \Carbon\Carbon::parse($audits->audit_date)->format('d/m/Y') }}
-                                        </td>
-                                    </tr>
+                                    @if ($audits)
+                                        <tr>
+                                            <td class="align-middle text-center text-sm">{{ $audits->organization }}</td>
+                                            <td class="align-middle text-center text-sm">{{ $audits->audit_reference }}</td>
+                                            <td class="align-middle text-center text-sm">{{ $audits->audit_type }}</td>
+                                            <td class="align-middle text-center text-sm">{{ $audits->section }}</td>
+                                            <td class="align-middle text-center text-sm">{{ $audits->location }}</td>
+                                            <td class="align-middle text-center text-sm">
+                                                {{ \Carbon\Carbon::parse($audits->audit_date)->format('d/m/Y') }}
+                                            </td>
+                                        </tr>
+                                    @endif
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-
 
                 {{-- -------------------  Findings   -------------------- --}}
 
@@ -80,17 +76,133 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end pe-3 pt-4">
+                    <div class="row align-items-center justify-content-between px-3 pt-4 pb-5">
+                        {{-- Centered Date Filters + Export Button --}}
+                        <div class="col-md-10 d-flex justify-content-center gap-4 flex-wrap">
 
-                        <a href="{{ route('admin.audit.finding.form', $audits->id) }}" class="btn bg-gradient-success"
-                            role="button" aria-pressed="true">+
-                            Add New</a>
+                            {{-- Date From --}}
+                            <div class="col-auto">
+                                <div class="input-group input-group-static">
+                                    <label class="ms-0 mb-1">From</label>
+                                    <input type="date" name="start_date" class="form-control"
+                                        value="{{ request('start_date') }}" placeholder="Start Date">
+                                </div>
+                            </div>
+
+                            {{-- Date To --}}
+                            <div class="col-auto">
+                                <div class="input-group input-group-static">
+                                    <label class="ms-0 mb-1">To</label>
+                                    <input type="date" name="end_date" class="form-control"
+                                        value="{{ request('end_date') }}" placeholder="End Date">
+                                </div>
+                            </div>
+
+                            <input type="hidden" id="current_audit_id" value="{{ $audits->id }}">
+
+                            {{-- Export Button --}}
+                            <div class="col-auto pt-3">
+                                <div class="input-group input-group-static">
+                                    <button type="button" class="btn bg-gradient-success" onclick="exportAuditPdf()">
+                                        Export PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {{-- Right-Aligned Add Button --}}
+                        <div class="col-md-2 d-flex justify-content-end">
+                            <!-- Right: Import Button -->
+                            <button type="button" class="btn bg-gradient-success btn-sm me-2" data-bs-toggle="modal"
+                                data-bs-target="#modal-import-staff" title="Import Staff & SES">
+                                Excel
+                            </button>
+
+                            <a href="{{ route('admin.audit.finding.form', $audits->id) }}" class="btn bg-gradient-success"
+                                role="button" aria-pressed="true">+
+                                Add New</a>
+                        </div>
                     </div>
 
-                    @if (session('status'))
+
+                    <!-- Import Modal -->
+                    <div class="modal fade" id="modal-import-staff" tabindex="-1" role="dialog"
+                        aria-labelledby="modal-import-staff" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title font-weight-normal" id="modal-title-import">Audit Import / Export
+                                    </h6>
+                                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="overflow-auto" style="max-height: 60vh; padding-right: 5px;">
+                                        {{-- === FINDING IMPORT === --}}
+                                        <form action="{{ route('admin.finding.import') }}" method="post"
+                                            enctype="multipart/form-data" class="mb-3">
+                                            @csrf
+
+                                            {{-- Pass audit_id as hidden field --}}
+                                            <input type="hidden" name="audit_id" value="{{ $audits->id }}">
+
+                                            <label class="form-label mb-1">Select Excel file to import findings</label>
+                                            <div class="align-self-center pt-3">
+                                                <input type="file" name="excel_file"
+                                                    class="btn btn-sm bg-gradient-secondary" required>
+                                                <button type="submit" class="btn bg-gradient-success">Import</button>
+                                            </div>
+                                        </form>
+
+
+                                        {{-- === FINDING EXPORT === --}}
+                                        <div class="col-md-10 d-flex gap-4 flex-wrap pt-3">
+                                            <div class="col-auto">
+                                                <div class="input-group input-group-static">
+                                                    <label class="ms-0 mb-1">From</label>
+                                                    <input type="date" id="finding_excel_start_date"
+                                                        class="form-control" placeholder="Start Date">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <div class="input-group input-group-static">
+                                                    <label class="ms-0 mb-1">To</label>
+                                                    <input type="date" id="finding_excel_end_date"
+                                                        class="form-control" placeholder="End Date">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-auto pt-3">
+                                                <div class="input-group input-group-static">
+                                                    <button type="button" class="btn bg-gradient-success"
+                                                        onclick="exportFindingExcel()">
+                                                        Export Excel
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light btn-sm"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
-                                <small>{{ session('status') }}</small>
+                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                                role="alert">
+                                <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -100,7 +212,7 @@
 
                     <div class="card-body ps-3 pe-2 pb-5 pt-0">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0" id="myTable">
                                 <thead>
                                     <tr>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Rule
@@ -111,7 +223,8 @@
                                             Date</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Finding #
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Level</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Level
+                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Repeated
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Nature
@@ -122,6 +235,8 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">
+                                            Email</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Replies</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
@@ -161,16 +276,16 @@
                                                     @if ($finding->attachment)
                                                         <a href="{{ asset('storage/' . $finding->attachment) }}"
                                                             target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
                                                             data-bs-placement="bottom" title="print">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
                                                         </a>
                                                         <a href="{{ asset('storage/' . $finding->attachment) }}"
                                                             target="_blank"
-                                                            class="btn bg-transparent btn-sm btn-tooltip m-0" role="button"
-                                                            aria-pressed="true" data-bs-toggle="tooltip"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
                                                             data-bs-placement="bottom" title="download" download>
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">download</span>
@@ -181,26 +296,126 @@
                                                 </div>
                                             </td>
 
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <button class="btn bg-transparent btn-sm m-0" data-bs-toggle="modal"
+                                                        data-bs-target="#emailModal{{ $finding->id }}">
+                                                        <span class="material-icons"
+                                                            style="font-size: 1.5rem;">email</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <!-- Email Modal -->
+                                            <div class="modal fade" id="emailModal{{ $finding->id }}" tabindex="-1"
+                                                role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <form
+                                                            action="{{ route('admin.audit.finding.sendEmail', $finding->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <div class="modal-header">
+                                                                <h6 class="modal-title">Send Email for Audit Finding
+                                                                    #{{ $finding->finding_number }}</h6>
+                                                                <button type="button" class="btn-close text-dark"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>To</label>
+                                                                    <input type="email" name="to"
+                                                                        class="form-control" required>
+                                                                </div>
+
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>CC</label>
+                                                                    <input type="text" name="cc"
+                                                                        class="form-control"
+                                                                        placeholder="Separate multiple emails with commas">
+                                                                </div>
+
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>BCC</label>
+                                                                    <input type="text" name="bcc"
+                                                                        class="form-control"
+                                                                        placeholder="Separate multiple emails with commas">
+                                                                </div>
+
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>Subject</label>
+                                                                    <input type="text" name="subject"
+                                                                        class="form-control"
+                                                                        value="Reminder: Reply Required for Audit Finding #{{ $finding->finding_number }}">
+                                                                </div>
+
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>Body</label>
+                                                                    <textarea name="body" class="form-control" rows="8">Dear Auditee,
+
+You are requested to provide a reply for the following finding:
+
+Finding No: {{ $finding->finding_number }}
+Level: {{ $finding->finding_level }}
+Nature: {{ $finding->nature_of_finding }}
+Finding: {{ $finding->finding }}
+Audit Ref: {{ $finding->audit->audit_reference }}
+Audit Type: {{ $finding->audit->audit_type }}
+Section: {{ $finding->audit->section }}
+Location: {{ $finding->audit->location }}
+Audit Date: {{ $finding->audit->audit_date }}
+
+Best regards,
+Quality Assurance
+Serene Eng. Services
+</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit"
+                                                                    class="btn bg-gradient-success">Send Email</button>
+                                                                <button type="button" class="btn btn-light btn-sm"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                             <td class="align-middle text-center text-sm">
                                                 <div class="d-flex justify-content-center align-items-center mt-3">
                                                     <a href="{{ route('admin.audit.finding.reply.view', $finding->id) }}"
                                                         class="btn bg-gradient-secondary ms-1 px-3 py-2" role="button"
                                                         aria-pressed="true">
-                                                        Views
+                                                        View
                                                     </a>
                                                 </div>
                                             </td>
 
+
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center">
-
                                                     <div>
-                                                        <a href="" target="_blank"
+                                                        <a href="{{ route('admin.audit.finding.print.pdf', $finding->id) }}"
+                                                            target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
                                                             role="button" aria-pressed="true" data-bs-toggle="tooltip"
-                                                            data-bs-placement="bottom" title="print">
+                                                            data-bs-placement="bottom" title="print findings">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
+                                                        </a>
+                                                    </div>
+
+                                                    <div>
+                                                        <a href="{{ route('admin.audit.finding.download.pdf', $finding->id) }}"
+                                                            target="_blank"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            role="button" aria-pressed="true" data-bs-toggle="tooltip"
+                                                            data-bs-placement="bottom" title="download findings" download>
+                                                            <span class="material-icons"
+                                                                style="font-size: 1.5rem;">download</span>
                                                         </a>
                                                     </div>
 
@@ -272,7 +487,6 @@
                                     @endforeach
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                 </div>
@@ -282,6 +496,26 @@
 
     {{-- To make rows cilckable and prevent icons link to be effected --}}
     <script>
+         $(document).ready(function() {
+            $('#myTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+            });
+        });
+
+        $(document).ready(function() {
+            var table = $('#myTable').DataTable();
+
+            // Add Bootstrap spacing classes
+            $('#myTable_length').addClass('mt-0 mb-2 ms-2'); // entries
+            $('#myTable_filter').addClass('mt-0 mb-2 me-2'); // Search box
+            $('#myTable_paginate').addClass('mt-3 me-2'); // Pagination
+            $('#myTable_info').addClass('mt-3 ms-3'); // Info text
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.clickable-row').forEach(function(row) {
                 row.addEventListener('click', function(e) {
@@ -296,5 +530,32 @@
                 });
             });
         });
+
+        function exportAuditPdf() {
+            const startDate = document.querySelector('input[name="start_date"]').value;
+            const endDate = document.querySelector('input[name="end_date"]').value;
+            const auditId = document.getElementById('current_audit_id').value;
+
+            if (!startDate || !endDate) {
+                alert("Please select both start and end dates.");
+                return;
+            }
+
+            const url = `/admin/audit/${auditId}/finding/export/pdf?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        }
+
+        function exportFindingExcel() {
+            const startDate = document.getElementById('finding_excel_start_date').value;
+            const endDate = document.getElementById('finding_excel_end_date').value;
+
+            if (!startDate || !endDate) {
+                alert("Please select both start and end dates.");
+                return;
+            }
+
+            const url = `/admin/audit/finding/export/excel?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        }
     </script>
 @endsection

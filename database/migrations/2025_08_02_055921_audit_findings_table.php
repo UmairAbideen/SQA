@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id(); // Primary key
             $table->foreignId('audit_id')->references('id')->on('audits')
                 ->onDelete('cascade')->onUpdate('cascade');
-            $table->string('rule_reference')->nullable(); // Rule reference
-            $table->text('finding')->nullable(); // Finding details
+            $table->longText('rule_reference')->nullable(); // Rule reference
+            $table->longText('finding')->nullable(); // Finding details
             $table->string('attachment')->nullable(); // 📎 New: Attachment file path
             $table->date('target_dates')->nullable(); // Target dates
             $table->string('finding_number')->nullable(); // Finding #

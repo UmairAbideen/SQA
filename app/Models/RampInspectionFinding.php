@@ -10,6 +10,7 @@ class RampInspectionFinding extends Model
     use HasFactory;
 
     protected $fillable = [
+        'ramp_inspection_id',
         'code',
         'category',
         'finding',

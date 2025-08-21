@@ -116,9 +116,6 @@ Route::get('/admin/document/manual/delete/{id}', [ManualController::class, 'dele
 
 
 
-
-
-
 // ========= Ramp Inspection ===========================================
 
 Route::get('/admin/rampinspection/view', [RampInspectionController::class, 'view'])->name('admin.rampinspection.view')->middleware('Admin');
@@ -144,6 +141,43 @@ Route::post('/admin/rampinspection/update/{id}', [RampInspectionController::clas
 Route::get('/admin/rampinspection/delete/{id}', [RampInspectionController::class, 'delete'])->name('admin.rampinspection.delete')->middleware('Admin');
 
 
+// Print & Download Ramp Inspection PDF
+Route::get('/admin/rampinspection/print/pdf/{id}', [RampInspectionController::class, 'generatePdf'])
+    ->name('admin.rampinspection.print.pdf')
+    ->middleware('Admin');
+
+Route::get('/admin/rampinspection/download/pdf/{id}', [RampInspectionController::class, 'downloadPdf'])
+    ->name('admin.rampinspection.download.pdf')
+    ->middleware('Admin');
+
+// RampInspection PDF Export by Date Range
+Route::get('/admin/rampinspection/export/pdf', [RampInspectionController::class, 'exportRampInspectionsByDate'])
+    ->name('admin.rampinspection.range.pdf')
+    ->middleware('Admin');
+
+
+// Excel Import
+Route::post('/admin/rampinspection/import', [RampInspectionController::class, 'importExcel'])
+    ->name('admin.rampinspection.import')
+    ->middleware('Admin');
+
+// Excel Export (date range)
+Route::get('/admin/rampinspection/export/excel', [RampInspectionController::class, 'exportExcelByDate'])
+    ->name('admin.rampinspection.range.excel')
+    ->middleware('Admin');
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ========= Ramp Inspection Findings ===========================================
 
 Route::get('/admin/rampinspection/finding/view/{id}', [RampInspectionController::class, 'findingView'])->name('admin.rampinspection.finding.view')->middleware('Admin');
@@ -159,6 +193,49 @@ Route::post('/admin/rampinspection/finding/update/{id}', [RampInspectionControll
 Route::get('/admin/rampinspection/finding/delete/{id}', [RampInspectionController::class, 'findingDelete'])->name('admin.rampinspection.finding.delete')->middleware('Admin');
 
 
+// Print & Download Ramp Inspection Finding
+
+Route::get('/admin/rampinspection/finding/print/pdf/{id}', [RampInspectionController::class, 'printRampFinding'])
+    ->name('admin.rampinspection.finding.print.pdf')
+    ->middleware('Admin');
+
+Route::get('/admin/rampinspection/finding/download/pdf/{id}', [RampInspectionController::class, 'downloadRampFinding'])
+    ->name('admin.rampinspection.finding.download.pdf')
+    ->middleware('Admin');
+
+
+// Export all findings by date range
+
+Route::get('/admin/rampinspection/{ramp}/finding/export/pdf', [RampInspectionController::class, 'exportRampFindingsByDateRange'])
+    ->name('admin.rampinspection.finding.range.pdf')
+    ->middleware('Admin');
+
+
+// Finding Excel Import
+Route::post('/admin/rampinspection/{ramp}/finding/import', [RampInspectionController::class, 'importRampFindings'])
+    ->name('admin.rampinspection.finding.import')
+    ->middleware('Admin');
+
+
+// Finding Excel Export by Date Range
+Route::get('/admin/rampinspection/{ramp}/finding/export/excel', [RampInspectionController::class, 'exportRampFindingsExcelByDateRange'])
+    ->name('admin.rampinspection.finding.range.excel')
+    ->middleware('Admin');
+
+// routes/web.php
+Route::post('/admin/rampinspection/finding/{finding}/send-email', [RampInspectionController::class, 'sendFindingEmail'])
+    ->name('admin.rampinspection.finding.sendEmail')
+    ->middleware('Admin');
+
+
+
+
+
+
+
+
+
+
 // ========= Ramp Inspection Reply ===========================================
 
 Route::get('/admin/rampinspection/finding/reply/view/{id}', [RampInspectionController::class, 'replyView'])->name('admin.rampinspection.finding.reply.view')->middleware('Admin');
@@ -172,6 +249,37 @@ Route::get('/admin/rampinspection/finding/reply/edit/{id}', [RampInspectionContr
 Route::post('/admin/rampinspection/finding/reply/update/{id}', [RampInspectionController::class, 'replyUpdate'])->name('admin.rampinspection.finding.reply.update')->middleware('Admin');
 
 Route::get('/admin/rampinspection/finding/reply/delete/{id}', [RampInspectionController::class, 'replyDelete'])->name('admin.rampinspection.finding.reply.delete')->middleware('Admin');
+
+
+// Print & Download RampInspection Finding Reply
+Route::get('/admin/rampinspection/finding/reply/print/{id}', [RampInspectionController::class, 'printRampReplies'])
+    ->name('admin.rampinspection.finding.reply.print.pdf')->middleware('Admin');
+
+Route::get('/admin/rampinspection/finding/reply/download/{id}', [RampInspectionController::class, 'downloadRampReplies'])
+    ->name('admin.rampinspection.finding.reply.download.pdf')->middleware('Admin');
+
+Route::get('/admin/rampinspection/finding/{finding}/reply/export/pdf', [RampInspectionController::class, 'exportRepliesOfRampFindingByDateRange'])
+    ->name('admin.rampinspection.finding.reply.range.pdf')
+    ->middleware('Admin');
+
+// Reply Excel Import
+Route::post('/admin/rampinspection/finding/reply/import/{finding}', [RampInspectionController::class, 'importRampReplies'])
+    ->name('admin.rampinspection.finding.reply.import')->middleware('Admin');
+
+// Reply Excel Export with Date Range
+Route::get('/admin/rampinspection/finding/{finding}/reply/export/excel', [RampInspectionController::class, 'exportRampRepliesExcelByDateRange'])
+    ->name('admin.rampinspection.finding.reply.export.excel')->middleware('Admin');
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -192,6 +300,24 @@ Route::post('/admin/audit/update/{id}', [AuditController::class, 'update'])->nam
 Route::get('/admin/audit/delete/{id}', [AuditController::class, 'delete'])->name('admin.audit.delete')->middleware('Admin');
 
 
+// ========= Print & Download ===========================================
+
+Route::get('/admin/audit/print/pdf/{id}', [AuditController::class, 'generatePdf'])->name('admin.audit.print.pdf')->middleware('Admin');
+
+Route::get('/admin/audit/download/pdf/{id}', [AuditController::class, 'downloadPdf'])->name('admin.audit.download.pdf')->middleware('Admin');
+
+// Audit PDF for date range
+Route::get('/admin/audit/export/pdf', [AuditController::class, 'exportAuditsByDate'])->name('admin.audit.range.pdf')->middleware('Admin');
+
+
+// Audit Excel Import & Export
+Route::post('/admin/audit/import', [AuditController::class, 'import'])->name('admin.audit.import')->middleware('Admin');
+
+Route::get('/admin/audit/export/excel', [AuditController::class, 'exportExcelByDate'])->name('admin.audit.range.excel')->middleware('Admin');
+
+
+
+
 // ========= Audit Findings ===========================================
 
 Route::get('/admin/audit/finding/view/{id}', [AuditController::class, 'findingView'])->name('admin.audit.finding.view')->middleware('Admin');
@@ -210,6 +336,32 @@ Route::post('/admin/audit/finding/update/{id}', [AuditController::class, 'findin
 
 Route::get('/admin/audit/finding/delete/{id}', [AuditController::class, 'findingDelete'])->name('admin.audit.finding.delete')->middleware('Admin');
 
+// ========= Print & Download ===========================================
+
+Route::get('/admin/audit/finding/print/pdf/{id}', [AuditController::class, 'printAuditFindings'])->name('admin.audit.finding.print.pdf')->middleware('Admin');
+
+Route::get('/admin/audit/finding/download/pdf/{id}', [AuditController::class, 'downloadAuditFindings'])->name('admin.audit.finding.download.pdf')->middleware('Admin');
+
+// Export all findings by date range
+
+Route::get('/admin/audit/{audit}/finding/export/pdf', [AuditController::class, 'exportAuditFindingsByDateRange'])
+    ->name('admin.audit.finding.range.pdf')
+    ->middleware('Admin');
+
+// Finding Excel Import & Export
+Route::post('/admin/finding/import', [AuditController::class, 'importAuditFindings'])->name('admin.finding.import')->middleware('Admin');
+
+Route::get('/admin/audit/finding/export/excel', [AuditController::class, 'exportFindingsByDate'])->name('admin.finding.export.excel')->middleware('Admin');
+
+// Audit Finding Email
+Route::post('/admin/audit/finding/{id}/send-email', [AuditController::class, 'sendFindingEmail'])
+    ->name('admin.audit.finding.sendEmail')
+    ->middleware('Admin');
+
+
+
+
+
 
 // ========= Audit Reply ===========================================
 
@@ -224,6 +376,35 @@ Route::get('/admin/audit/finding/reply/edit/{id}', [AuditController::class, 'rep
 Route::post('/admin/audit/finding/reply/update/{id}', [AuditController::class, 'replyUpdate'])->name('admin.audit.finding.reply.update')->middleware('Admin');
 
 Route::get('/admin/audit/finding/reply/delete/{id}', [AuditController::class, 'replyDelete'])->name('admin.audit.finding.reply.delete')->middleware('Admin');
+
+
+// ========= Audit Finding Print/Download with Reply ============================
+
+Route::get('/admin/audit/finding/reply/print/{id}', [AuditController::class, 'printAuditReplies'])
+    ->name('admin.audit.finding.reply.print.pdf')->middleware('Admin');
+
+Route::get('/admin/audit/finding/reply/download/{id}', [AuditController::class, 'downloadAuditReplies'])
+    ->name('admin.audit.finding.reply.download.pdf')->middleware('Admin');
+
+Route::get('/admin/finding/{finding}/reply/export/pdf', [AuditController::class, 'exportRepliesOfFindingByDateRange'])
+    ->name('admin.finding.reply.range.pdf')
+    ->middleware('Admin');
+
+Route::post('/admin/finding/reply/import', [AuditController::class, 'importAuditReplies'])
+    ->name('admin.reply.import')
+    ->middleware('Admin');
+
+Route::get('/admin/finding/{finding}/reply/export/excel', [AuditController::class, 'exportRepliesExcel'])
+    ->name('admin.finding.reply.range.excel')
+    ->middleware('Admin');
+
+
+
+
+
+
+
+
 
 
 

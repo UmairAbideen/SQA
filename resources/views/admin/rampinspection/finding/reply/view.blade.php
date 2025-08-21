@@ -119,16 +119,127 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end pe-3 pt-4">
-                        <a href="{{ route('admin.rampinspection.finding.reply.form', $rampInspectionFindings->id) }}"
-                            class="btn bg-gradient-success" role="button" aria-pressed="true">+
-                            Add New</a>
+
+                    <div class="row align-items-center justify-content-between px-3 pt-4 pb-5">
+                        {{-- Centered Date Filters + Export Button --}}
+                        <div class="col-md-10 d-flex justify-content-center gap-4 flex-wrap">
+
+                            {{-- Date From --}}
+                            <div class="col-auto">
+                                <div class="input-group input-group-static">
+                                    <label class="ms-0 mb-1">From</label>
+                                    <input type="date" name="start_date" class="form-control"
+                                        value="{{ request('start_date') }}" placeholder="Start Date">
+                                </div>
+                            </div>
+
+                            {{-- Date To --}}
+                            <div class="col-auto">
+                                <div class="input-group input-group-static">
+                                    <label class="ms-0 mb-1">To</label>
+                                    <input type="date" name="end_date" class="form-control"
+                                        value="{{ request('end_date') }}" placeholder="End Date">
+                                </div>
+                            </div>
+
+                            {{-- Hidden Ramp Finding ID --}}
+                            <input type="hidden" id="current_ramp_finding_id" value="{{ $rampInspectionFindings->id }}">
+
+                            {{-- Export Button --}}
+                            <div class="col-auto pt-3">
+                                <div class="input-group input-group-static">
+                                    <button type="button" class="btn bg-gradient-success btn-sm" onclick="exportRampPdf()">
+                                        Export PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Right-Aligned Add Button --}}
+                        <div class="col-md-2 d-flex justify-content-end">
+                            <!-- Right: Import Button -->
+                            <button type="button" class="btn bg-gradient-success btn-sm me-2" data-bs-toggle="modal"
+                                data-bs-target="#modal-import-staff" title="Import Staff & SES">
+                                Excel
+                            </button>
+
+                            <a href="{{ route('admin.rampinspection.finding.reply.form', $rampInspectionFindings->id) }}"
+                                class="btn bg-gradient-success" role="button" aria-pressed="true">+
+                                Add New</a>
+                        </div>
                     </div>
 
-                    @if (session('status'))
+
+
+
+                    <!-- Import Modal -->
+                    <div class="modal fade" id="modal-import-staff" tabindex="-1" role="dialog"
+                        aria-labelledby="modal-import-staff" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title font-weight-normal" id="modal-title-import">Audit Import / Export
+                                    </h6>
+                                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
+                                        aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="overflow-auto" style="max-height: 60vh; padding-right: 5px;">
+
+                                        {{-- === REPLY IMPORT === --}}
+                                        <form
+                                            action="{{ route('admin.rampinspection.finding.reply.import', $rampInspectionFindings->id) }}"
+                                            method="post" enctype="multipart/form-data">
+                                            @csrf
+                                            <label class="form-label mb-1">Select Excel file to import Replies</label>
+                                            <div class="pt-3">
+                                                <input type="file" name="excel_file"
+                                                    class="btn btn-sm bg-gradient-secondary" required>
+                                                <button type="submit" class="btn bg-gradient-success">Import</button>
+                                            </div>
+                                        </form>
+
+                                        {{-- === REPLY EXPORT === --}}
+                                        <div class="col-md-10 d-flex gap-4 flex-wrap pt-3">
+                                            <div class="col-auto">
+                                                <label class="form-label mb-1">From</label>
+                                                <input type="date" id="reply_excel_start_date" class="form-control"
+                                                    placeholder="Start Date">
+                                            </div>
+
+                                            <div class="col-auto">
+                                                <label class="form-label mb-1">To</label>
+                                                <input type="date" id="reply_excel_end_date" class="form-control"
+                                                    placeholder="End Date">
+                                            </div>
+
+                                            <div class="col-auto pt-3">
+                                                <button type="button" class="btn bg-gradient-success"
+                                                    onclick="exportRampReplyExcel({{ $rampInspectionFindings->id }})">
+                                                    Export Excel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light btn-sm"
+                                        data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
-                                <small>{{ session('status') }}</small>
+                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                                role="alert">
+                                <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -136,9 +247,10 @@
                         </div>
                     @endif
 
+
                     <div class="card-body ps-3 pe-2 pb-5 pt-0">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0" id="myTable">
                                 <thead>
                                     <tr>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Date</th>
@@ -149,7 +261,8 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Reply By
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Remarks By
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Remarks
+                                            By
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Status
                                         </th>
@@ -218,12 +331,22 @@
 
                                                 <td>
                                                     <div class="d-flex justify-content-center align-items-center">
-                                                        <a href="" target="_blank"
+                                                        <a href="{{ route('admin.rampinspection.finding.reply.print.pdf', $reply->id) }}"
+                                                            target="_blank"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
-                                                            title="print">
+                                                            title="Print">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">print</span>
                                                         </a>
+
+                                                        <a href="{{ route('admin.rampinspection.finding.reply.download.pdf', $reply->id) }}"
+                                                            target="_blank"
+                                                            class="btn bg-transparent btn-sm btn-tooltip m-0"
+                                                            title="Download" download>
+                                                            <span class="material-icons"
+                                                                style="font-size: 1.5rem;">download</span>
+                                                        </a>
+
 
                                                         <a href="{{ route('admin.rampinspection.finding.reply.edit', $reply->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
@@ -283,4 +406,55 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+            });
+        });
+
+        $(document).ready(function() {
+            var table = $('#myTable').DataTable();
+
+            // Add Bootstrap spacing classes
+            $('#myTable_length').addClass('mt-0 mb-2 ms-2'); // entries
+            $('#myTable_filter').addClass('mt-0 mb-2 me-2'); // Search box
+            $('#myTable_paginate').addClass('mt-3 me-2'); // Pagination
+            $('#myTable_info').addClass('mt-3 ms-3'); // Info text
+        });
+
+        function exportRampPdf() {
+            const startDate = document.querySelector('input[name="start_date"]').value;
+            const endDate = document.querySelector('input[name="end_date"]').value;
+            const rampFindingId = document.getElementById('current_ramp_finding_id').value;
+
+            if (!startDate || !endDate) {
+                alert("Please select both start and end dates.");
+                return;
+            }
+
+            const url =
+                `/admin/rampinspection/finding/${rampFindingId}/reply/export/pdf?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        }
+
+        function exportRampReplyExcel(findingId) {
+            const startDate = document.getElementById('reply_excel_start_date').value;
+            const endDate = document.getElementById('reply_excel_end_date').value;
+
+            if (!startDate || !endDate) {
+                alert("Please select both start and end dates.");
+                return;
+            }
+
+            const url =
+                `/admin/rampinspection/finding/${findingId}/reply/export/excel?start_date=${startDate}&end_date=${endDate}`;
+            window.open(url, '_blank');
+        }
+    </script>
 @endsection

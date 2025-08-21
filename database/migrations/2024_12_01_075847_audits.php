@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('audit_type')->nullable(); // Type of Audit
             $table->string('section')->nullable(); // Section involved in the audit
             $table->string('location')->nullable(); // Location of the audit
-            $table->string('location')->nullable(); // Location of the audit
             $table->string('status')->nullable();
             $table->date('audit_date')->nullable(); // Date of the audit
             $table->timestamps(); // Created_at and Updated_at

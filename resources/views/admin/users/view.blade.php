@@ -58,7 +58,7 @@
 
                     <div class="card-body ps-3 pe-2 pb-5 pt-3">
                         <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
+                            <table class="table align-items-center mb-0" id="myTable">
                                 <thead>
                                     <tr>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
@@ -215,4 +215,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#myTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "responsive": true,
+            });
+        });
+
+        $(document).ready(function() {
+            var table = $('#myTable').DataTable();
+
+            // Add Bootstrap spacing classes
+            $('#myTable_length').addClass('mt-0 mb-2 ms-2'); // entries
+            $('#myTable_filter').addClass('mt-0 mb-2 me-2'); // Search box
+            $('#myTable_paginate').addClass('mt-3 me-2'); // Pagination
+            $('#myTable_info').addClass('mt-3 ms-3'); // Info text
+        });
+    </script>
 @endsection

@@ -13,13 +13,13 @@
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link text-white @yield('active-link-db')" href="{{ route('admin.dashboard') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <span class="nav-link-text ms-1">Dashboard</span>
                     </div>
                 </a>
-            </li>
+            </li> --}}
 
             <li class="nav-item">
                 <a class="nav-link text-white @yield('active-link-users')" href="{{ route('admin.users.view') }}">

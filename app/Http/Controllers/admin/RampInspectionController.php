@@ -8,6 +8,18 @@ use App\Models\RampInspectionReply;
 use App\Http\Controllers\Controller;
 use App\Models\RampInspectionFinding;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Imports\RampInspectionImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RampInspectionExport;
+use App\Imports\RampFindingImport;
+use App\Exports\RampFindingExport;
+use App\Imports\RampReplyImport;
+use App\Exports\RampReplyExport;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\FindingReminderMail;
+
+
 
 class RampInspectionController extends Controller
 {
@@ -119,6 +131,78 @@ class RampInspectionController extends Controller
         return back()->with('status', 'Ramp Inspection Form has been removed.');
     }
 
+    public function generatePdf($id)
+    {
+        $rampInspection = RampInspection::with('rampInspectionFinding')->findOrFail($id);
+
+        return Pdf::loadView('admin.rampinspection.pdf', compact('rampInspection'))
+            ->setPaper('a4', 'landscape')
+            ->stream('RampInspection.pdf');
+    }
+
+    public function downloadPdf($id)
+    {
+        $rampInspection = RampInspection::with('rampInspectionFinding')->findOrFail($id);
+
+        return Pdf::loadView('admin.rampinspection.pdf', compact('rampInspection'))
+            ->setPaper('a4', 'landscape')
+            ->download('RampInspection.pdf');
+    }
+
+
+    public function exportRampInspectionsByDate(Request $request)
+    {
+        $start = $request->input('start_date');
+        $end = $request->input('end_date');
+
+        if (!$start || !$end) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        $rampInspections = RampInspection::whereBetween('date', [$start, $end])
+            ->orderBy('date', 'asc')
+            ->get();
+
+        if ($rampInspections->isEmpty()) {
+            return redirect()->back()->with('error', 'No ramp inspections found in the selected date range.');
+        }
+
+        return Pdf::loadView('admin.rampinspection.range_pdf', compact('rampInspections', 'start', 'end'))
+            ->setPaper('a4', 'landscape')
+            ->stream('RampInspections_' . $start . '_to_' . $end . '.pdf');
+    }
+
+
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new RampInspectionImport, $request->file('excel_file'));
+
+        return redirect()->back()->with('success', 'Ramp Inspections imported successfully.');
+    }
+
+
+    public function exportExcelByDate(Request $request)
+    {
+        $start = $request->query('start_date');
+        $end = $request->query('end_date');
+
+        if (!$start || !$end) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        return Excel::download(new RampInspectionExport($start, $end), "RampInspections_{$start}_to_{$end}.xlsx");
+    }
+
+
+
+
+
+
+
 
 
 
@@ -210,8 +294,6 @@ class RampInspectionController extends Controller
     }
 
 
-
-
     public function findingEdit($id)
     {
         $rampinspectionfinding = RampInspectionFinding::find($id);
@@ -265,13 +347,123 @@ class RampInspectionController extends Controller
     }
 
 
-
     public function findingDelete($id)
     {
         $rampInspectionFinding = RampInspectionFinding::find($id);
         $rampInspectionFinding->delete();
         return back()->with('status', 'Ramp Inspection Finding has been removed.');
     }
+
+    public function printRampFinding($findingId)
+    {
+        $finding = RampInspectionFinding::with('rampInspection')->findOrFail($findingId);
+        $rampInspection = $finding->rampInspection;
+
+        $pdf = Pdf::loadView('admin.rampinspection.finding.pdf', compact('rampInspection', 'finding'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('RampInspectionFinding.pdf');
+    }
+
+    public function downloadRampFinding($findingId)
+    {
+        $finding = RampInspectionFinding::with('rampInspection')->findOrFail($findingId);
+        $rampInspection = $finding->rampInspection;
+
+        $pdf = Pdf::loadView('admin.rampinspection.finding.pdf', compact('rampInspection', 'finding'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('RampInspectionFinding.pdf');
+    }
+
+    public function exportRampFindingsByDateRange(Request $request, $rampId)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        $rampInspection = RampInspection::with('rampInspectionFinding')->findOrFail($rampId);
+
+        $findings = $rampInspection->rampInspectionFinding()
+            ->whereBetween('created_at', [$startDate, $endDate]) // Or use target_date if exists
+            ->get();
+
+        if ($findings->isEmpty()) {
+            return redirect()->back()->with('error', 'No findings found in the selected date range.');
+        }
+
+        $pdf = Pdf::loadView('admin.rampinspection.finding.range_pdf', compact('rampInspection', 'findings', 'startDate', 'endDate'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('RampInspectionFindingsRange.pdf');
+    }
+
+    public function importRampFindings(Request $request, $rampId)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new RampFindingImport($rampId), $request->file('excel_file'));
+
+        return back()->with('success', 'Findings imported successfully.');
+    }
+
+    public function exportRampFindingsExcelByDateRange(Request $request, $rampId)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->with('error', 'Please select both start and end dates.');
+        }
+
+        return Excel::download(new RampFindingExport($rampId, $startDate, $endDate), 'RampFindings_' . $startDate . '_to_' . $endDate . '.xlsx');
+    }
+
+
+    public function sendFindingEmail(Request $request, $findingId)
+    {
+        $request->validate([
+            'to' => 'required|email',
+            'cc' => 'nullable|string',
+            'bcc' => 'nullable|string',
+            'subject' => 'required|string|max:255',
+            'body' => 'required|string',
+        ]);
+
+        $finding = RampInspectionFinding::with('rampInspection')->findOrFail($findingId);
+
+        // Parse multiple CC/BCC (comma separated)
+        $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
+        $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
+
+        Mail::to($request->to)
+            ->cc($cc)
+            ->bcc($bcc)
+            ->queue(new FindingReminderMail($finding, $request->subject, $request->body));
+
+
+        return back()->with('status', 'Email sent successfully.');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -410,5 +602,84 @@ class RampInspectionController extends Controller
         $rampInspectionReply = RampInspectionReply::find($id);
         $rampInspectionReply->delete();
         return back()->with('status', 'Reply has been removed.');
+    }
+
+
+    public function printRampReplies($replyId)
+    {
+        $reply = RampInspectionReply::with('rampInspectionFinding.rampInspection')->findOrFail($replyId);
+        $finding = $reply->rampInspectionFinding;
+        $rampInspection = $finding->rampInspection;
+
+        $pdf = Pdf::loadView('admin.rampinspection.finding.reply.pdf', compact('rampInspection', 'finding', 'reply'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('RampInspectionReply.pdf');
+    }
+
+    public function downloadRampReplies($replyId)
+    {
+        $reply = RampInspectionReply::with('rampInspectionFinding.rampInspection')->findOrFail($replyId);
+        $finding = $reply->rampInspectionFinding;
+        $rampInspection = $finding->rampInspection;
+
+        $pdf = Pdf::loadView('admin.rampinspection.finding.reply.pdf', compact('rampInspection', 'finding', 'reply'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('RampInspectionReply.pdf');
+    }
+
+
+    public function exportRepliesOfRampFindingByDateRange(Request $request, $findingId)
+    {
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        if (!$startDate || !$endDate) {
+            return redirect()->back()->with('error', 'Please select start and end dates.');
+        }
+
+        // Get finding and replies in date range
+        $finding = RampInspectionFinding::with([
+            'rampInspection',
+            'rampInspectionReply' => function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('created_at', [$startDate, $endDate]);
+            }
+        ])->findOrFail($findingId);
+
+        $rampInspection = $finding->rampInspection;
+        $replies = $finding->rampInspectionReply;
+
+        if ($replies->isEmpty()) {
+            return redirect()->back()->with('error', 'No replies found in the selected date range.');
+        }
+
+        return Pdf::loadView('admin.rampinspection.finding.reply.range_pdf', compact('rampInspection', 'finding', 'replies', 'startDate', 'endDate'))
+            ->setPaper('a4', 'landscape')
+            ->stream('RampFindingRepliesRange.pdf');
+    }
+
+
+    public function importRampReplies(Request $request, $findingId)
+    {
+        $request->validate([
+            'excel_file' => 'required|file|mimes:xlsx,xls',
+        ]);
+
+        Excel::import(new RampReplyImport($findingId), $request->file('excel_file'));
+
+        return back()->with('success', 'Replies imported successfully.');
+    }
+
+    public function exportRampRepliesExcelByDateRange(Request $request, $findingId)
+    {
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+
+        if (!$startDate || !$endDate) {
+            return back()->with('error', 'Please select start and end dates.');
+        }
+
+        return Excel::download(new RampReplyExport($findingId, $startDate, $endDate), 'RampFindingReplies.xlsx');
     }
 }
