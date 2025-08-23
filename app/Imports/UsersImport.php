@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class StaffImport implements ToModel, WithHeadingRow
+class UsersImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
