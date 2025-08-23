@@ -11,10 +11,15 @@ class UsersImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
+        // Skip rows with no email
+        if (empty($row['email'])) {
+            return null;
+        }
+
         return new User([
             'username'    => $row['username'] ?? null,
-            'email'       => $row['email'] ?? null,
-            'password'    => isset($row['password']) ? bcrypt($row['password']) : null, // encrypt password
+            'email'       => trim($row['email']),
+            'password'    => isset($row['password']) ? bcrypt($row['password']) : null,
             'org'         => $row['org'] ?? null,
             'ses_no'      => $row['ses_no'] ?? null,
             'role'        => $row['role'] ?? null,
