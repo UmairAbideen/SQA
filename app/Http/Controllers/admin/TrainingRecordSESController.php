@@ -41,7 +41,7 @@ class TrainingRecordSESController extends Controller
             'at_4' => 'nullable|string',
         ]);
 
-        TrainingRecordSES::create($request->only([
+        TrainingRecordSes::create($request->only([
             'staff_id',
             'hf',
             'op',
