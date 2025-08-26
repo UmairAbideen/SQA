@@ -313,7 +313,7 @@
                                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <form
-                                                            action="{{ route('admin.audit.finding.sendEmail', $finding->id) }}"
+                                                            action="{{ route('admin.audit.finding.deliver', $finding->id) }}"
                                                             method="POST">
                                                             @csrf
                                                             <div class="modal-header">
