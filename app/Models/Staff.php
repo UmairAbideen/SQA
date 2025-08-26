@@ -48,7 +48,7 @@ class Staff extends Model
 
     public function trainingSes()
     {
-        return $this->hasOne(TrainingRecordSES::class);
+        return $this->hasOne(TrainingRecordSes::class);
     }
 
 
