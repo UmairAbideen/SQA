@@ -22,7 +22,7 @@ class RampFindingImport implements ToModel, WithHeadingRow
             'code' => $row['code'] ?? null,
             'category' => $row['category'] ?? null,
             'finding' => $row['finding'] ?? null,
-            'attachment' => $row['attachment'] ?? null,
+            // 'attachment' => $row['attachment'] ?? null,
             'status' => $row['status'] ?? null,
             'closed_by' => $row['closed_by'] ?? null,
         ]);
