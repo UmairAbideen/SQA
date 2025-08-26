@@ -428,7 +428,7 @@ class AuditController extends Controller
             'body' => 'required|string',
         ]);
 
-        $finding = AuditFinding::with('audit')->findOrFail($findingId);
+        $finding = AuditFinding::with('audit')->findOrFail($id);
 
         $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
         $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
