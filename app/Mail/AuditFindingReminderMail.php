@@ -5,10 +5,9 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\AuditFinding;
 
-class AuditFindingReminderMail extends Mailable implements ShouldQueue
+class AuditFindingReminderMail extends Mailable
 {
     use Queueable, SerializesModels;
 

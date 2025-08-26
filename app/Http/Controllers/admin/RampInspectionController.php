@@ -444,7 +444,7 @@ class RampInspectionController extends Controller
         Mail::to($request->to)
             ->cc($cc)
             ->bcc($bcc)
-            ->queue(new FindingReminderMail($finding, $request->subject, $request->body));
+            ->send(new FindingReminderMail($finding, $request->subject, $request->body));
 
 
         return back()->with('status', 'Email sent successfully.');

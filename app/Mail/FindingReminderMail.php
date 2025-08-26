@@ -5,10 +5,9 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Models\RampInspectionFinding;
 
-class FindingReminderMail extends Mailable implements ShouldQueue
+class FindingReminderMail extends Mailable
 {
     use Queueable, SerializesModels;
 

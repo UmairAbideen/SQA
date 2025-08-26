@@ -431,7 +431,7 @@ class AuditController extends Controller
         Mail::to($request->to)
             ->cc($cc)
             ->bcc($bcc)
-            ->queue(new AuditFindingReminderMail($finding, $request->subject, $request->body));
+            ->send(new AuditFindingReminderMail($finding, $request->subject, $request->body));
 
         return back()->with('status', 'Email sent successfully.');
     }
