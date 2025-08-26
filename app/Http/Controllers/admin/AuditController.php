@@ -413,8 +413,13 @@ class AuditController extends Controller
         return Excel::download(new AuditFindingExport($start, $end), "Findings_{$start}_to_{$end}.xlsx");
     }
 
-    public function sendFindingEmail(Request $request, $findingId)
+
+
+    // Option 2: keep {id} but adjust method signature
+    public function sendFindingEmail(Request $request, $id)
     {
+        $finding = AuditFinding::with('audit')->findOrFail($id);
+
         $request->validate([
             'to' => 'required|email',
             'cc' => 'nullable|string',
