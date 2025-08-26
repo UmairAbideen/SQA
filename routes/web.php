@@ -362,6 +362,9 @@ Route::post('/admin/audit/finding/{id}/dispatch-mail', [AuditController::class, 
     ->name('admin.audit.finding.sendEmail')
     ->middleware('Admin');
 
+Route::post('/test-mail', function () {
+    return 'OK';
+});
 
 
 
