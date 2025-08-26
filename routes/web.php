@@ -358,13 +358,11 @@ Route::get('/admin/audit/finding/export/excel', [AuditController::class, 'export
 //     ->name('admin.audit.finding.sendEmail')
 //     ->middleware('Admin');
 
-Route::post('/admin/audit/finding/{id}/dispatch-mail', [AuditController::class, 'sendFindingEmail'])
-    ->name('admin.audit.finding.sendEmail')
-    ->middleware('Admin');
+Route::post('/admin/audit/finding/{id}/send-email', [AuditController::class, 'sendFindingEmail'])
+    ->name('admin.audit.finding.sendEmail');
+//    ->middleware('Admin');  // 🔴 comment this out just to test
 
-Route::post('/test-mail', function () {
-    return 'OK';
-});
+
 
 
 
