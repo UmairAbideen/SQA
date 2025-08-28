@@ -24,11 +24,12 @@
                     </div>
 
                     <div class="row align-items-center px-3 pt-4 pb-5 g-3">
-                        {{-- Centered Date Filters + Export Button --}}
+                        {{-- Centered Date Filters --}}
                         <div class="col-12 col-md-10">
-                            <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <div class="row g-3 justify-content-center">
+
                                 {{-- Date From --}}
-                                <div class="flex-grow-1 flex-md-grow-0">
+                                <div class="col-12 col-md-6">
                                     <div class="input-group input-group-static w-100">
                                         <label class="ms-0 mb-1">From</label>
                                         <input type="date" name="start_date" class="form-control"
@@ -37,7 +38,7 @@
                                 </div>
 
                                 {{-- Date To --}}
-                                <div class="flex-grow-1 flex-md-grow-0">
+                                <div class="col-12 col-md-6">
                                     <div class="input-group input-group-static w-100">
                                         <label class="ms-0 mb-1">To</label>
                                         <input type="date" name="end_date" class="form-control"
@@ -45,15 +46,16 @@
                                     </div>
                                 </div>
 
-                                {{-- Export Button --}}
-                                <div class="pt-2 pt-md-3">
-                                    <button type="button" class="btn bg-gradient-success btn-sm w-100 w-md-auto"
+                                {{-- Export Button - full width next row --}}
+                                <div class="col-12">
+                                    <button type="button" class="btn bg-gradient-success btn-sm w-100"
                                         onclick="exportAuditPdf()">
                                         Export PDF
                                     </button>
                                 </div>
                             </div>
                         </div>
+
 
                         {{-- Right-Aligned Add & Import Buttons --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
