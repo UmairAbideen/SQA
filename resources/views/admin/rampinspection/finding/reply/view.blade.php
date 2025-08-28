@@ -107,9 +107,6 @@
 
 
 
-
-
-
                 {{-- -------------------  Reply   -------------------- --}}
 
                 <div class="card my-4 mt-6">
@@ -120,54 +117,56 @@
                     </div>
 
 
-                    <div class="row align-items-center justify-content-between px-3 pt-4 pb-5">
+                    <div class="row align-items-center px-3 pt-4 pb-5 g-3">
                         {{-- Centered Date Filters + Export Button --}}
-                        <div class="col-md-10 d-flex justify-content-center gap-4 flex-wrap">
-
-                            {{-- Date From --}}
-                            <div class="col-auto">
-                                <div class="input-group input-group-static">
-                                    <label class="ms-0 mb-1">From</label>
-                                    <input type="date" name="start_date" class="form-control"
-                                        value="{{ request('start_date') }}" placeholder="Start Date">
+                        <div class="col-12 col-md-10">
+                            <div class="row g-2 justify-content-center">
+                                {{-- Date From --}}
+                                <div class="col-6 col-md-auto">
+                                    <div class="input-group input-group-static w-100">
+                                        <label class="ms-0 mb-1">From</label>
+                                        <input type="date" name="start_date" class="form-control"
+                                            value="{{ request('start_date') }}" placeholder="Start Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- Date To --}}
-                            <div class="col-auto">
-                                <div class="input-group input-group-static">
-                                    <label class="ms-0 mb-1">To</label>
-                                    <input type="date" name="end_date" class="form-control"
-                                        value="{{ request('end_date') }}" placeholder="End Date">
+                                {{-- Date To --}}
+                                <div class="col-6 col-md-auto">
+                                    <div class="input-group input-group-static w-100">
+                                        <label class="ms-0 mb-1">To</label>
+                                        <input type="date" name="end_date" class="form-control"
+                                            value="{{ request('end_date') }}" placeholder="End Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- Hidden Ramp Finding ID --}}
-                            <input type="hidden" id="current_ramp_finding_id" value="{{ $rampInspectionFindings->id }}">
+                                {{-- Hidden Ramp Finding ID --}}
+                                <input type="hidden" id="current_ramp_finding_id"
+                                    value="{{ $rampInspectionFindings->id }}">
 
-                            {{-- Export Button --}}
-                            <div class="col-auto pt-3">
-                                <div class="input-group input-group-static">
-                                    <button type="button" class="btn bg-gradient-success btn-sm" onclick="exportRampPdf()">
+                                {{-- Export PDF Button --}}
+                                <div class="col-12 col-md-auto pt-2 pt-md-3">
+                                    <button type="button" class="btn bg-gradient-success btn-sm w-100 w-md-auto"
+                                        onclick="exportRampPdf()">
                                         Export PDF
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Right-Aligned Add Button --}}
-                        <div class="col-md-2 d-flex justify-content-end">
-                            <!-- Right: Import Button -->
-                            <button type="button" class="btn bg-gradient-success btn-sm me-2" data-bs-toggle="modal"
+                        {{-- Right-Aligned Import + Add New --}}
+                        <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
+                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
                             </button>
 
                             <a href="{{ route('admin.rampinspection.finding.reply.form', $rampInspectionFindings->id) }}"
-                                class="btn bg-gradient-success" role="button" aria-pressed="true">+
-                                Add New</a>
+                                class="btn bg-gradient-success w-100 w-md-auto">
+                                + Add New
+                            </a>
                         </div>
                     </div>
+
 
 
 
@@ -178,12 +177,9 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h6 class="modal-title font-weight-normal" id="modal-title-import">Audit Import / Export
-                                    </h6>
+                                    <h6 class="modal-title font-weight-normal">Aircraft Inspection Reply Import / Export</h6>
                                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
-                                        aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
+                                        aria-label="Close"></button>
                                 </div>
 
                                 <div class="modal-body">
@@ -192,10 +188,10 @@
                                         {{-- === REPLY IMPORT === --}}
                                         <form
                                             action="{{ route('admin.rampinspection.finding.reply.import', $rampInspectionFindings->id) }}"
-                                            method="post" enctype="multipart/form-data">
+                                            method="post" enctype="multipart/form-data" class="mb-4">
                                             @csrf
                                             <label class="form-label mb-1">Select Excel file to import Replies</label>
-                                            <div class="pt-3">
+                                            <div class="d-flex flex-wrap gap-2 pt-2">
                                                 <input type="file" name="excel_file"
                                                     class="btn btn-sm bg-gradient-secondary" required>
                                                 <button type="submit" class="btn bg-gradient-success">Import</button>
@@ -203,21 +199,28 @@
                                         </form>
 
                                         {{-- === REPLY EXPORT === --}}
-                                        <div class="col-md-10 d-flex gap-4 flex-wrap pt-3">
-                                            <div class="col-auto">
-                                                <label class="form-label mb-1">From</label>
-                                                <input type="date" id="reply_excel_start_date" class="form-control"
-                                                    placeholder="Start Date">
+                                        <div class="row g-2 pt-2 justify-content-start">
+                                            {{-- From --}}
+                                            <div class="col-6 col-md-auto">
+                                                <div class="input-group input-group-static w-100">
+                                                    <label class="ms-0 mb-1">From</label>
+                                                    <input type="date" id="reply_excel_start_date"
+                                                        class="form-control" placeholder="Start Date">
+                                                </div>
                                             </div>
 
-                                            <div class="col-auto">
-                                                <label class="form-label mb-1">To</label>
-                                                <input type="date" id="reply_excel_end_date" class="form-control"
-                                                    placeholder="End Date">
+                                            {{-- To --}}
+                                            <div class="col-6 col-md-auto">
+                                                <div class="input-group input-group-static w-100">
+                                                    <label class="ms-0 mb-1">To</label>
+                                                    <input type="date" id="reply_excel_end_date" class="form-control"
+                                                        placeholder="End Date">
+                                                </div>
                                             </div>
 
-                                            <div class="col-auto pt-3">
-                                                <button type="button" class="btn bg-gradient-success"
+                                            {{-- Export Excel --}}
+                                            <div class="col-12 col-md-auto pt-2 pt-md-3">
+                                                <button type="button" class="btn bg-gradient-success w-100 w-md-auto"
                                                     onclick="exportRampReplyExcel({{ $rampInspectionFindings->id }})">
                                                     Export Excel
                                                 </button>
@@ -225,13 +228,16 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-light btn-sm"
-                                        data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">
+                                        Close
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
 
 
 

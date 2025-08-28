@@ -84,8 +84,8 @@
                                 </div>
 
                                 {{-- Delete --}}
-                                <div class="ps-3 pt-4 pb-3">
-                                    <a href="#" class="btn bg-gradient-danger btn-sm m-0" data-bs-toggle="modal"
+                                <div class="ps-1 pt-4 pb-3">
+                                    <a href="#" class="btn bg-transparent btn-sm m-0 pt-2" data-bs-toggle="modal"
                                         data-bs-target="#modal-delete-{{ $record->id }}" title="Delete Record">
                                         <span class="material-icons" style="font-size: 1.2rem;">delete</span>
                                     </a>

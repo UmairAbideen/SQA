@@ -109,7 +109,7 @@
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
-                                                            class="btn bg-gradient-danger btn-sm mb-0 ms-1 me-1"
+                                                            class="bg-gradient-secondary btn-sm mb-0 ms-1 me-1"
                                                             title="Confirm deletion">
                                                             Yes
                                                         </button>

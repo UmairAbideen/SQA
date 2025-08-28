@@ -77,13 +77,12 @@
                     </div>
 
                     <div class="row align-items-center px-3 pt-4 pb-5 g-3">
-
-                        {{-- Centered Date Filters + Export Button --}}
+                        {{-- Date Filters + Export --}}
                         <div class="col-12 col-md-10">
-                            <div class="d-flex flex-wrap justify-content-center gap-3">
+                            <div class="row g-2 justify-content-center">
 
                                 {{-- Date From --}}
-                                <div class="flex-grow-1 flex-md-grow-0">
+                                <div class="col-6 col-md-auto">
                                     <div class="input-group input-group-static w-100">
                                         <label class="ms-0 mb-1">From</label>
                                         <input type="date" name="start_date" class="form-control"
@@ -92,7 +91,7 @@
                                 </div>
 
                                 {{-- Date To --}}
-                                <div class="flex-grow-1 flex-md-grow-0">
+                                <div class="col-6 col-md-auto">
                                     <div class="input-group input-group-static w-100">
                                         <label class="ms-0 mb-1">To</label>
                                         <input type="date" name="end_date" class="form-control"
@@ -103,8 +102,8 @@
                                 <input type="hidden" id="current_audit_id" value="{{ $audits->id }}">
 
                                 {{-- Export Button --}}
-                                <div class="pt-2 pt-md-3 w-100 w-md-auto">
-                                    <button type="button" class="btn bg-gradient-success w-100 w-md-auto"
+                                <div class="col-12 col-md-auto pt-2 pt-md-3">
+                                    <button type="button" class="btn bg-gradient-success btn-sm w-100 w-md-auto"
                                         onclick="exportAuditPdf()">
                                         Export PDF
                                     </button>
@@ -114,8 +113,8 @@
 
                         {{-- Right-Aligned Add & Import Buttons --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
-                            <button type="button" class="btn bg-gradient-success btn-sm w-100 w-md-auto"
-                                data-bs-toggle="modal" data-bs-target="#modal-import-staff" title="Import Staff & SES">
+                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
+                                data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
                             </button>
 
@@ -127,7 +126,6 @@
                     </div>
 
 
-
                     <!-- Import Modal -->
                     <div class="modal fade" id="modal-import-staff" tabindex="-1" role="dialog"
                         aria-labelledby="modal-import-staff" aria-hidden="true">
@@ -135,7 +133,7 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h6 class="modal-title font-weight-normal" id="modal-title-import">
-                                        Audit Import / Export
+                                        Audit Findings Import / Export
                                     </h6>
                                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
                                         aria-label="Close">
@@ -143,7 +141,7 @@
                                     </button>
                                 </div>
 
-                                <!-- scrollable modal body -->
+                                <!-- Scrollable modal body -->
                                 <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
 
                                     {{-- === FINDING IMPORT === --}}
@@ -154,17 +152,19 @@
 
                                         <label class="form-label mb-1">Select Excel file to import findings</label>
                                         <div class="d-flex flex-wrap gap-2 pt-2">
-                                            <input type="file" name="excel_file"
-                                                class="btn btn-sm bg-gradient-secondary" required>
-                                            <button type="submit" class="btn bg-gradient-success w-100 w-md-auto">
+                                            <input type="file" name="excel_file" class="btn btn-sm bg-gradient-secondary"
+                                                required>
+                                            <button type="submit" class="btn bg-gradient-success">
                                                 Import
                                             </button>
                                         </div>
                                     </form>
 
                                     {{-- === FINDING EXPORT === --}}
-                                    <div class="row g-3 align-items-end">
-                                        <div class="col-12 col-md-4">
+                                    <div class="row g-2 pt-3 justify-content-start justify-content-md-start">
+
+                                        {{-- Date From --}}
+                                        <div class="col-6 col-md-auto">
                                             <div class="input-group input-group-static w-100">
                                                 <label class="ms-0 mb-1">From</label>
                                                 <input type="date" id="finding_excel_start_date" class="form-control"
@@ -172,7 +172,8 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-12 col-md-4">
+                                        {{-- Date To --}}
+                                        <div class="col-6 col-md-auto">
                                             <div class="input-group input-group-static w-100">
                                                 <label class="ms-0 mb-1">To</label>
                                                 <input type="date" id="finding_excel_end_date" class="form-control"
@@ -180,8 +181,9 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-12 col-md-4">
-                                            <button type="button" class="btn bg-gradient-success w-100"
+                                        {{-- Export Button --}}
+                                        <div class="col-12 col-md-auto pt-2 pt-md-3">
+                                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto"
                                                 onclick="exportFindingExcel()">
                                                 Export Excel
                                             </button>
@@ -196,6 +198,7 @@
                             </div>
                         </div>
                     </div>
+
 
 
 

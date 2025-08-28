@@ -74,8 +74,9 @@
                                 </div>
                             </div>
 
+
                             <!-- Right: Import Button -->
-                            <div class="align-self-start pt-1">
+                            <div class="pt-1 d-flex justify-content-center justify-content-md-end w-100 w-md-auto">
                                 <button type="button" class="btn bg-gradient-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                     Import Excel
@@ -452,11 +453,10 @@
                                                                             <span aria-hidden="true">×</span>
                                                                         </button>
                                                                     </div>
-                                                                    <div class="modal-body">
-                                                                        <p>Are you sure you want to remove this
+                                                                    <div class="modal-body  text-break">
+                                                                        <p>Do you want to remove this
                                                                             authorization
-                                                                            for
-                                                                            <strong>{{ $staff->user->username }}</strong>?
+                                                                            for <br><strong>{{ $staff->user->username }}</strong>?
                                                                         </p>
                                                                     </div>
                                                                     <div class="modal-footer">
