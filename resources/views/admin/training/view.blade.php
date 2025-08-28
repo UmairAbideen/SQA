@@ -99,7 +99,7 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <p>Select Excel files to import records for each staff type:</p>
+                                        <p>Select Excel file to import:</p>
 
                                         <!-- Scrollable Container if needed -->
                                         <div class="overflow-auto" style="max-height: 60vh; padding-right: 5px;">
