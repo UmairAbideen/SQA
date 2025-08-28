@@ -23,31 +23,31 @@
                         </div>
                     </div>
 
-                    <div class="row align-items-center justify-content-between px-3 pt-4 pb-5">
+                    <div class="row align-items-center px-3 pt-4 pb-5 g-3">
                         {{-- Centered Date Filters + Export Button --}}
-                        <div class="col-md-10 d-flex justify-content-center gap-4 flex-wrap">
-                            {{-- Date From --}}
-                            <div class="col-auto">
-                                <div class="input-group input-group-static">
-                                    <label class="ms-0 mb-1">From</label>
-                                    <input type="date" name="start_date" class="form-control"
-                                        value="{{ request('start_date') }}" placeholder="Start Date">
+                        <div class="col-12 col-md-10">
+                            <div class="d-flex flex-wrap justify-content-center gap-3">
+                                {{-- Date From --}}
+                                <div class="flex-grow-1 flex-md-grow-0">
+                                    <div class="input-group input-group-static w-100">
+                                        <label class="ms-0 mb-1">From</label>
+                                        <input type="date" name="start_date" class="form-control"
+                                            value="{{ request('start_date') }}" placeholder="Start Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- Date To --}}
-                            <div class="col-auto">
-                                <div class="input-group input-group-static">
-                                    <label class="ms-0 mb-1">To</label>
-                                    <input type="date" name="end_date" class="form-control"
-                                        value="{{ request('end_date') }}" placeholder="End Date">
+                                {{-- Date To --}}
+                                <div class="flex-grow-1 flex-md-grow-0">
+                                    <div class="input-group input-group-static w-100">
+                                        <label class="ms-0 mb-1">To</label>
+                                        <input type="date" name="end_date" class="form-control"
+                                            value="{{ request('end_date') }}" placeholder="End Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- Export Button --}}
-                            <div class="col-auto pt-3">
-                                <div class="input-group input-group-static">
-                                    <button type="button" class="btn bg-gradient-success btn-sm"
+                                {{-- Export Button --}}
+                                <div class="pt-2 pt-md-3">
+                                    <button type="button" class="btn bg-gradient-success btn-sm w-100 w-md-auto"
                                         onclick="exportAuditPdf()">
                                         Export PDF
                                     </button>
@@ -55,20 +55,20 @@
                             </div>
                         </div>
 
-                        {{-- Right-Aligned Add Button --}}
-                        <div class="col-md-2 d-flex justify-content-end">
-                            <!-- Right: Import Button -->
-                            <button type="button" class="btn bg-gradient-success me-2" data-bs-toggle="modal"
+                        {{-- Right-Aligned Add & Import Buttons --}}
+                        <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
+                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
                             </button>
 
-                            <a href="{{ route('admin.audit.form') }}" class="btn bg-gradient-success" role="button"
-                                aria-pressed="true">
+                            <a href="{{ route('admin.audit.form') }}" class="btn bg-gradient-success w-100 w-md-auto"
+                                role="button" aria-pressed="true">
                                 + Add New
                             </a>
                         </div>
                     </div>
+
 
                     <!-- Import Modal -->
                     <div class="modal fade" id="modal-import-staff" tabindex="-1" role="dialog"

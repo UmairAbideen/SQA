@@ -353,14 +353,10 @@ Route::post('/admin/finding/import', [AuditController::class, 'importAuditFindin
 
 Route::get('/admin/audit/finding/export/excel', [AuditController::class, 'exportFindingsByDate'])->name('admin.finding.export.excel')->middleware('Admin');
 
-// // Audit Finding Email
-// Route::post('/admin/audit/finding/{id}/send-email', [AuditController::class, 'sendFindingEmail'])
-//     ->name('admin.audit.finding.sendEmail')
-//     ->middleware('Admin');
-
-Route::post('/admin/audit/finding/{id}/deliver', [AuditController::class, 'sendFindingEmail'])
-    ->name('admin.audit.finding.deliver');
-
+// Audit Finding Email
+Route::post('/admin/audit/finding/{id}/send-email', [AuditController::class, 'sendFindingEmail'])
+    ->name('admin.audit.finding.sendEmail')
+    ->middleware('Admin');
 
 
 

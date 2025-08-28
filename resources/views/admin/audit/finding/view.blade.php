@@ -76,54 +76,56 @@
                         </div>
                     </div>
 
-                    <div class="row align-items-center justify-content-between px-3 pt-4 pb-5">
+                    <div class="row align-items-center px-3 pt-4 pb-5 g-3">
+
                         {{-- Centered Date Filters + Export Button --}}
-                        <div class="col-md-10 d-flex justify-content-center gap-4 flex-wrap">
+                        <div class="col-12 col-md-10">
+                            <div class="d-flex flex-wrap justify-content-center gap-3">
 
-                            {{-- Date From --}}
-                            <div class="col-auto">
-                                <div class="input-group input-group-static">
-                                    <label class="ms-0 mb-1">From</label>
-                                    <input type="date" name="start_date" class="form-control"
-                                        value="{{ request('start_date') }}" placeholder="Start Date">
+                                {{-- Date From --}}
+                                <div class="flex-grow-1 flex-md-grow-0">
+                                    <div class="input-group input-group-static w-100">
+                                        <label class="ms-0 mb-1">From</label>
+                                        <input type="date" name="start_date" class="form-control"
+                                            value="{{ request('start_date') }}" placeholder="Start Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            {{-- Date To --}}
-                            <div class="col-auto">
-                                <div class="input-group input-group-static">
-                                    <label class="ms-0 mb-1">To</label>
-                                    <input type="date" name="end_date" class="form-control"
-                                        value="{{ request('end_date') }}" placeholder="End Date">
+                                {{-- Date To --}}
+                                <div class="flex-grow-1 flex-md-grow-0">
+                                    <div class="input-group input-group-static w-100">
+                                        <label class="ms-0 mb-1">To</label>
+                                        <input type="date" name="end_date" class="form-control"
+                                            value="{{ request('end_date') }}" placeholder="End Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <input type="hidden" id="current_audit_id" value="{{ $audits->id }}">
+                                <input type="hidden" id="current_audit_id" value="{{ $audits->id }}">
 
-                            {{-- Export Button --}}
-                            <div class="col-auto pt-3">
-                                <div class="input-group input-group-static">
-                                    <button type="button" class="btn bg-gradient-success" onclick="exportAuditPdf()">
+                                {{-- Export Button --}}
+                                <div class="pt-2 pt-md-3 w-100 w-md-auto">
+                                    <button type="button" class="btn bg-gradient-success w-100 w-md-auto"
+                                        onclick="exportAuditPdf()">
                                         Export PDF
                                     </button>
                                 </div>
                             </div>
                         </div>
 
-
-                        {{-- Right-Aligned Add Button --}}
-                        <div class="col-md-2 d-flex justify-content-end">
-                            <!-- Right: Import Button -->
-                            <button type="button" class="btn bg-gradient-success btn-sm me-2" data-bs-toggle="modal"
-                                data-bs-target="#modal-import-staff" title="Import Staff & SES">
+                        {{-- Right-Aligned Add & Import Buttons --}}
+                        <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
+                            <button type="button" class="btn bg-gradient-success btn-sm w-100 w-md-auto"
+                                data-bs-toggle="modal" data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
                             </button>
 
-                            <a href="{{ route('admin.audit.finding.form', $audits->id) }}" class="btn bg-gradient-success"
-                                role="button" aria-pressed="true">+
-                                Add New</a>
+                            <a href="{{ route('admin.audit.finding.form', $audits->id) }}"
+                                class="btn bg-gradient-success w-100 w-md-auto" role="button" aria-pressed="true">
+                                + Add New
+                            </a>
                         </div>
                     </div>
+
 
 
                     <!-- Import Modal -->
@@ -132,7 +134,8 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h6 class="modal-title font-weight-normal" id="modal-title-import">Audit Import / Export
+                                    <h6 class="modal-title font-weight-normal" id="modal-title-import">
+                                        Audit Import / Export
                                     </h6>
                                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
                                         aria-label="Close">
@@ -140,54 +143,52 @@
                                     </button>
                                 </div>
 
-                                <div class="modal-body">
-                                    <div class="overflow-auto" style="max-height: 60vh; padding-right: 5px;">
-                                        {{-- === FINDING IMPORT === --}}
-                                        <form action="{{ route('admin.finding.import') }}" method="post"
-                                            enctype="multipart/form-data" class="mb-3">
-                                            @csrf
+                                <!-- scrollable modal body -->
+                                <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
 
-                                            {{-- Pass audit_id as hidden field --}}
-                                            <input type="hidden" name="audit_id" value="{{ $audits->id }}">
+                                    {{-- === FINDING IMPORT === --}}
+                                    <form action="{{ route('admin.finding.import') }}" method="post"
+                                        enctype="multipart/form-data" class="mb-4">
+                                        @csrf
+                                        <input type="hidden" name="audit_id" value="{{ $audits->id }}">
 
-                                            <label class="form-label mb-1">Select Excel file to import findings</label>
-                                            <div class="align-self-center pt-3">
-                                                <input type="file" name="excel_file"
-                                                    class="btn btn-sm bg-gradient-secondary" required>
-                                                <button type="submit" class="btn bg-gradient-success">Import</button>
+                                        <label class="form-label mb-1">Select Excel file to import findings</label>
+                                        <div class="d-flex flex-wrap gap-2 pt-2">
+                                            <input type="file" name="excel_file"
+                                                class="btn btn-sm bg-gradient-secondary" required>
+                                            <button type="submit" class="btn bg-gradient-success w-100 w-md-auto">
+                                                Import
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    {{-- === FINDING EXPORT === --}}
+                                    <div class="row g-3 align-items-end">
+                                        <div class="col-12 col-md-4">
+                                            <div class="input-group input-group-static w-100">
+                                                <label class="ms-0 mb-1">From</label>
+                                                <input type="date" id="finding_excel_start_date" class="form-control"
+                                                    placeholder="Start Date">
                                             </div>
-                                        </form>
+                                        </div>
 
-
-                                        {{-- === FINDING EXPORT === --}}
-                                        <div class="col-md-10 d-flex gap-4 flex-wrap pt-3">
-                                            <div class="col-auto">
-                                                <div class="input-group input-group-static">
-                                                    <label class="ms-0 mb-1">From</label>
-                                                    <input type="date" id="finding_excel_start_date"
-                                                        class="form-control" placeholder="Start Date">
-                                                </div>
+                                        <div class="col-12 col-md-4">
+                                            <div class="input-group input-group-static w-100">
+                                                <label class="ms-0 mb-1">To</label>
+                                                <input type="date" id="finding_excel_end_date" class="form-control"
+                                                    placeholder="End Date">
                                             </div>
+                                        </div>
 
-                                            <div class="col-auto">
-                                                <div class="input-group input-group-static">
-                                                    <label class="ms-0 mb-1">To</label>
-                                                    <input type="date" id="finding_excel_end_date"
-                                                        class="form-control" placeholder="End Date">
-                                                </div>
-                                            </div>
-
-                                            <div class="col-auto pt-3">
-                                                <div class="input-group input-group-static">
-                                                    <button type="button" class="btn bg-gradient-success"
-                                                        onclick="exportFindingExcel()">
-                                                        Export Excel
-                                                    </button>
-                                                </div>
-                                            </div>
+                                        <div class="col-12 col-md-4">
+                                            <button type="button" class="btn bg-gradient-success w-100"
+                                                onclick="exportFindingExcel()">
+                                                Export Excel
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-light btn-sm"
                                         data-bs-dismiss="modal">Close</button>
@@ -195,6 +196,7 @@
                             </div>
                         </div>
                     </div>
+
 
 
 
@@ -313,7 +315,7 @@
                                                 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <form
-                                                            action="{{ route('admin.audit.finding.deliver', $finding->id) }}"
+                                                            action="{{ route('admin.audit.finding.sendEmail', $finding->id) }}"
                                                             method="POST">
                                                             @csrf
                                                             <div class="modal-header">
@@ -496,7 +498,7 @@ Serene Eng. Services
 
     {{-- To make rows cilckable and prevent icons link to be effected --}}
     <script>
-         $(document).ready(function() {
+        $(document).ready(function() {
             $('#myTable').DataTable({
                 "paging": true,
                 "searching": true,

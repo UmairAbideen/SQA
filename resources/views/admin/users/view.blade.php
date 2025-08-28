@@ -23,25 +23,36 @@
                         </div>
                     </div>
 
-                    <div class="d-flex ms-2 pt-2">
-                        <div class="p-2 pe-3 pt-4">
-                            <a href="{{ route('admin.users.export') }}" class="btn bg-gradient-success" role="button"
-                                aria-pressed="true">Export</a>
+                    <!-- Responsive button container -->
+                    <div class="row g-2 align-items-center px-3 pt-3">
+
+                        <!-- Export Button -->
+                        <div class="col-12 col-md-auto me-5">
+                            <a href="{{ route('admin.users.export') }}" class="btn bg-gradient-success w-100 w-md-auto">
+                                Export
+                            </a>
                         </div>
-                        <form action="{{ route('admin.users.import') }}" method="post" enctype="multipart/form-data"
-                            class="d-flex">
-                            @csrf
-                            <div class="align-self-center p-2 pt-4">
-                                <input type="file" name="excel_file" class="btn btn-sm bg-gradient-secondary" required>
-                            </div>
-                            <div class="pe-3 pt-4">
-                                <input type="submit" value="Import Excel" class="btn bg-gradient-success">
-                            </div>
-                        </form>
-                        <div class="ms-auto p-2 pe-3 pt-4">
-                            <a href="{{ route('admin.users.usersform') }}" class="btn bg-gradient-success" role="button"
-                                aria-pressed="true">+
-                                Add New</a>
+
+                        <!-- Import Form -->
+                        <div class="col-12 col-md d-flex flex-wrap align-items-center">
+                            <form action="{{ route('admin.users.import') }}" method="post" enctype="multipart/form-data"
+                                class="d-flex flex-wrap w-100">
+                                @csrf
+                                <div class="me-2 mb-2 mt-2">
+                                    <input type="file" name="excel_file" class="btn btn-sm bg-gradient-secondary" required>
+                                </div>
+                                <div class="mb-2 mt-2">
+                                    <input type="submit" value="Import Excel"
+                                        class="btn bg-gradient-success w-100 w-md-auto">
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Add New Button -->
+                        <div class="col-12 col-md-auto text-md-end">
+                            <a href="{{ route('admin.users.usersform') }}" class="btn bg-gradient-success w-100 w-md-auto">
+                                + Add New
+                            </a>
                         </div>
                     </div>
 
