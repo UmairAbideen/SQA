@@ -42,14 +42,10 @@ class LoginController extends Controller
         switch ($user->role) {
             case 'Admin':
                 return redirect('/admin/dashboard');
-            case 'QA Chief':
-                return redirect('/chief/dashboard');
-            case 'QA Staff':
-                return redirect('/staff/dashboard');
-            case 'HOD':
-                return redirect('/hod/dashboard');
-            case 'DS':
-                return redirect('/ds/dashboard');
+            case 'Auditor':
+                return redirect('/auditor/dashboard');
+            case 'Auditee':
+                return redirect('/auditee/dashboard');
             default:
                 return back()->with('error', 'Unauthorized role.');
         }

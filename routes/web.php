@@ -9,12 +9,13 @@ use App\Http\Controllers\users\UsersController;
 use App\Http\Controllers\admin\ManualController;
 use App\Http\Controllers\admin\TrainingController;
 use App\Http\Controllers\users\ApprovalController;
+use App\Http\Controllers\auditee\AuditeeController;
+use App\Http\Controllers\auditor\AuditorController;
 use App\Http\Controllers\users\ActivationController;
 use App\Http\Controllers\admin\QualityAuditorController;
 use App\Http\Controllers\admin\RampInspectionController;
 use App\Http\Controllers\admin\TrainingRecordSaController;
 use App\Http\Controllers\admin\AuthorizedAuditorController;
-
 use App\Http\Controllers\admin\TrainingRecordSESController;
 use App\Http\Controllers\admin\QualifyingMechanicController;
 use App\Http\Controllers\admin\StoreQualityInspectorController;
@@ -113,6 +114,7 @@ Route::get('/admin/document/manual/edit/{id}', [ManualController::class, 'edit']
 Route::post('/admin/document/manual/update/{id}', [ManualController::class, 'update'])->name('admin.document.manual.update')->middleware('Admin');
 
 Route::get('/admin/document/manual/delete/{id}', [ManualController::class, 'delete'])->name('admin.document.manual.delete')->middleware('Admin');
+
 
 
 
@@ -826,5 +828,31 @@ Route::post('admin/training-record-sa/import', [TrainingRecordSaController::clas
 
 
 
-// remove previous pictures when updating
-// also delete picture along with record
+
+
+
+
+
+
+
+//============= Auditor Routes =========================================================================
+
+// Dashboard
+Route::get('/auditor/dashboard', [AuditorController::class, 'dashboard'])
+    ->name('auditor.dashboard')->middleware('Auditor');
+
+// Manuals
+Route::get('/auditor/document/manual/view', [ManualController::class, 'auditorView'])
+    ->name('auditor.document.manual.view')->middleware('Auditor');
+
+
+
+//============= Auditee Routes =========================================================================
+
+// Dashboard
+Route::get('/auditee/dashboard', [AuditeeController::class, 'dashboard'])
+    ->name('auditee.dashboard')->middleware('Auditee');
+
+// Manuals
+Route::get('/auditee/document/manual/view', [ManualController::class, 'auditeeView'])
+    ->name('auditee.document.manual.view')->middleware('Auditee');
