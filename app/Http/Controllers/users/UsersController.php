@@ -54,7 +54,6 @@ class UsersController extends Controller
         return back()->with('status', 'New User is Successfully Created.');
     }
 
-
     public function single($id)
     {
         $user = User::find($id);

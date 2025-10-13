@@ -28,7 +28,7 @@
                                 Back</a>
                         </div>
 
-                        <form class='px-3' action="{{ route('admin.staff.update', $staff->id) }}" method="POST">
+                        <form class='px-3' action="{{ route('admin.staff.update', $staff->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
 
@@ -109,6 +109,25 @@
                                         @enderror
                                     </div>
                                 </div>
+
+                                <div class="col-md-6 px-3">
+                                    <div class="input-group input-group-static mb-4">
+                                        <input type="file" name="user_image" class="btn btn-sm bg-gradient-secondary">
+                                        @error('user_image')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    {{-- Show current image preview --}}
+                                    @if ($staff->user_image)
+                                        <div class="mt-2">
+                                            <p class="small text-muted mb-1">Current Image:</p>
+                                            <img src="{{ asset('storage/' . $staff->user_image) }}" alt="User Image"
+                                                class="img-thumbnail" style="width:120px; height:auto; border-radius:4px;">
+                                        </div>
+                                    @endif
+                                </div>
+
 
                                 {{-- Submit --}}
                                 <div class="mt-3 px-3">

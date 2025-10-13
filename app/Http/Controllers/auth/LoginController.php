@@ -42,6 +42,8 @@ class LoginController extends Controller
         switch ($user->role) {
             case 'Admin':
                 return redirect('/admin/dashboard');
+            case 'Director':
+                return redirect('/director/dashboard');
             case 'Auditor':
                 return redirect('/auditor/dashboard');
             case 'Auditee':

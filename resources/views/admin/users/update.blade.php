@@ -121,18 +121,17 @@
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label class="ms-0">Role</label>
-                                        <select class="form-control ps-1" name="role">
-                                            <option value="QA Chief"
-                                                {{ old('role', $user->role) == 'QA Chief' ? 'selected' : '' }}>QA Chief
+                                        <select class="form-control ps-1" name="role" required>
+                                            <option value="Admin"
+                                                {{ old('role', $user->role) == 'Admin' ? 'selected' : '' }}>Admin</option>
+                                            <option value="Director"
+                                                {{ old('role', $user->role) == 'Director' ? 'selected' : '' }}>Director
                                             </option>
-                                            <option value="QA Staff"
-                                                {{ old('role', $user->role) == 'QA Staff' ? 'selected' : '' }}>QA Staff
+                                            <option value="Auditor"
+                                                {{ old('role', $user->role) == 'Auditor' ? 'selected' : '' }}>Auditor
                                             </option>
-                                            <option value="HOD"
-                                                {{ old('role', $user->role) == 'HOD' ? 'selected' : '' }}>HOD
-                                            </option>
-                                            <option value="DS"
-                                                {{ old('role', $user->role) == 'DS' ? 'selected' : '' }}>DS
+                                            <option value="Auditee"
+                                                {{ old('role', $user->role) == 'Auditee' ? 'selected' : '' }}>Auditee
                                             </option>
                                         </select>
                                         @error('role')

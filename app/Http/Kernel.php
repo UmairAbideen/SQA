@@ -66,7 +66,9 @@ class Kernel extends HttpKernel
 
         //custom authentication middlewares
         'Admin' => \App\Http\Middleware\AdminAuthentication::class,
+        'Director'  => \App\Http\Middleware\DirectorAuthentication::class,
         'Auditor'  => \App\Http\Middleware\AuditorAuthentication::class,
         'Auditee'  => \App\Http\Middleware\AuditeeAuthentication::class,
+
     ];
 }

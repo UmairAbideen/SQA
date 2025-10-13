@@ -1,4 +1,4 @@
-@extends('auditor.layout.app')
+@extends('auditee.layout.app')
 
 @section('title')
     Manuals

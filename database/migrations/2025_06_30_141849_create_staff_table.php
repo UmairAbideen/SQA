@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('auth_no');
             $table->string('function')->nullable();
             $table->date('ini_issue_date')->nullable();
+            $table->string('user_image')->nullable();
             $table->timestamps();
         });
     }

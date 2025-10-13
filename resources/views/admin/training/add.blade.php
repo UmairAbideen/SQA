@@ -28,7 +28,7 @@
                                 Back</a>
                         </div>
 
-                        <form class="px-3" action="{{ route('admin.staff.create') }}" method="POST">
+                        <form class="px-3" action="{{ route('admin.staff.create') }}" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             @if (session('status'))
@@ -123,6 +123,15 @@
                                         <input type="date" name="ini_issue_date" class="form-control"
                                             value="{{ old('ini_issue_date') }}">
                                         @error('ini_issue_date')
+                                            <div class="text-danger small">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 px-3">
+                                    <div class="align-self-center my-4">
+                                        <input type="file" name="user_image" class="btn btn-sm bg-gradient-secondary">
+                                        @error('user_image')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>

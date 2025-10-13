@@ -184,7 +184,7 @@
                                         {{-- Export Button --}}
                                         <div class="col-12 col-md-auto pt-2 pt-md-3">
                                             <button type="button" class="btn bg-gradient-success w-100 w-md-auto"
-                                                onclick="exportFindingExcel()">
+                                                onclick="exportFindingExcel({{ $audits->id }})">
                                                 Export Excel
                                             </button>
                                         </div>
@@ -550,7 +550,8 @@ Serene Eng. Services
             window.open(url, '_blank');
         }
 
-        function exportFindingExcel() {
+
+        function exportFindingExcel(auditId) {
             const startDate = document.getElementById('finding_excel_start_date').value;
             const endDate = document.getElementById('finding_excel_end_date').value;
 
@@ -559,7 +560,7 @@ Serene Eng. Services
                 return;
             }
 
-            const url = `/admin/audit/finding/export/excel?start_date=${startDate}&end_date=${endDate}`;
+            const url = `/admin/audit/${auditId}/finding/export/excel?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
         }
     </script>

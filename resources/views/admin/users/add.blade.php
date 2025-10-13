@@ -126,22 +126,23 @@
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label class="ms-0">Role</label>
-                                        <select class="form-control ps-1" name="role">
+                                        <select class="form-control ps-1" name="role" required>
                                             <option selected disabled>--- Select Role ---</option>
-                                            <option value="QA Chief" {{ old('role') == 'QA Chief' ? 'selected' : '' }}>
-                                                QA Chief</option>
-                                            <option value="QA Staff" {{ old('role') == 'QA Staff' ? 'selected' : '' }}>
-                                                QA Staff</option>
-                                            <option value="HOD" {{ old('role') == 'QA Staff' ? 'selected' : '' }}>
-                                                HOD</option>
-                                            <option value="DS" {{ old('role') == 'DS' ? 'selected' : '' }}>
-                                                DS</option>
+                                            <option value="Admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin
+                                            </option>
+                                            <option value="Director" {{ old('role') == 'Director' ? 'selected' : '' }}>
+                                                Director</option>
+                                            <option value="Auditor" {{ old('role') == 'Auditor' ? 'selected' : '' }}>
+                                                Auditor</option>
+                                            <option value="Auditee" {{ old('role') == 'Auditee' ? 'selected' : '' }}>
+                                                Auditee</option>
                                         </select>
                                         @error('role')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
+
 
                                 <div class="mt-3">
                                     <button type="submit" class="btn bg-gradient-success">Submit</button>

@@ -23,7 +23,7 @@ class RampFindingExport implements FromCollection, WithHeadings
     {
         return RampInspectionFinding::where('ramp_inspection_id', $this->rampId)
             ->whereBetween('created_at', [$this->start, $this->end])
-            ->select('code', 'category', 'finding', 'attachment', 'status', 'closed_by', 'created_at')
+            ->select('code', 'category', 'finding', 'status', 'closed_by', 'created_at')
             ->get();
     }
 
@@ -33,7 +33,6 @@ class RampFindingExport implements FromCollection, WithHeadings
             'Code',
             'Category',
             'Finding',
-            'Attachment',
             'Status',
             'Closed By',
             'Created At',

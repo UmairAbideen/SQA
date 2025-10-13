@@ -401,7 +401,7 @@ class AuditController extends Controller
     }
 
 
-    public function exportFindingsByDate(Request $request)
+    public function exportFindingsByDate(Request $request, $auditId)
     {
         $start = $request->input('start_date');
         $end = $request->input('end_date');
@@ -410,8 +410,12 @@ class AuditController extends Controller
             return redirect()->back()->with('error', 'Please select both start and end dates.');
         }
 
-        return Excel::download(new AuditFindingExport($start, $end), "Findings_{$start}_to_{$end}.xlsx");
+        return Excel::download(
+            new AuditFindingExport($auditId, $start, $end),
+            "AuditFindings_{$auditId}_{$start}_to_{$end}.xlsx"
+        );
     }
+
 
 
 

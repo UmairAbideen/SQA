@@ -138,7 +138,7 @@
                                                         method="post">
                                                         @csrf
 
-                                                        @if ($user->status === 'deactive')
+                                                        @if ($user->status === 'deactive' || $user->status === NULL)
                                                             <input type="submit" value="De-Active"
                                                                 class="btn bg-gradient-secondary disabled btn-sm mb-0 ms-1 me-1">
                                                         @else
