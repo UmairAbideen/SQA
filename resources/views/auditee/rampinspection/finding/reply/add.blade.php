@@ -32,6 +32,8 @@
                             method="post" enctype="multipart/form-data">
                             @csrf
 
+                            <input type="hidden" name="is_draft" id="is_draft" value="no">
+
                             @if (session('status'))
                                 <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
                                     <small>{{ session('status') }}</small>
@@ -54,36 +56,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Reply By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply By</label>
-                                        <input type="text" name="reply_by" class="form-control"
-                                            value="{{ old('reply_by') }}">
-                                        @error('reply_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Remarks -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Remarks</label>
                                         <textarea name="remarks" class="form-control" rows="1">{{ old('remarks') }}</textarea>
                                         @error('remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Remarks By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Remarks By</label>
-                                        <input type="text" name="remarks_by" class="form-control"
-                                            value="{{ old('remarks_by') }}">
-                                        @error('remarks_by')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -104,7 +82,11 @@
                                 </div>
 
                                 <div class="mt-3">
-                                    <button type="submit" class="btn bg-gradient-success">Submit</button>
+                                    <button type="submit" class="btn bg-gradient-success"
+                                        onclick="setDraftStatus('no')">Submit</button>
+
+                                    <button type="submit" class="btn bg-gradient-secondary"
+                                        onclick="setDraftStatus('yes')">Save as Draft</button>
                                 </div>
                             </div>
                         </form>
@@ -113,4 +95,9 @@
             </div>
         </div>
     </div>
+    <script>
+        function setDraftStatus(value) {
+            document.getElementById('is_draft').value = value;
+        }
+    </script>
 @endsection

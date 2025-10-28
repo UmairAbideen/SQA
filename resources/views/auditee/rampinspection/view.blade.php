@@ -57,15 +57,15 @@
 
                         {{-- Right-Aligned Import + Add New --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
-                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
+                            {{-- <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
-                            </button>
+                            </button> --}}
 
-                            <a href="{{ route('auditee.rampinspection.form') }}"
+                            {{-- <a href="{{ route('auditee.rampinspection.form') }}"
                                 class="btn bg-gradient-success w-100 w-md-auto">
                                 + Add New
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
 
@@ -274,7 +274,7 @@
                                                         </a>
                                                     </div>
 
-                                                    <div>
+                                                    {{-- <div>
                                                         <a href="{{ route('auditee.rampinspection.edit', $rampInspection->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
                                                             role="button" aria-pressed="true" data-bs-toggle="tooltip"
@@ -282,9 +282,9 @@
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">update</span>
                                                         </a>
-                                                    </div>
+                                                    </div> --}}
 
-                                                    <div>
+                                                    {{-- <div>
                                                         <button type="button" class="btn bg-transparent btn-sm m-0"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#modal-delete-{{ $rampInspection->id }}"
@@ -337,7 +337,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </td>
                                         </tr>

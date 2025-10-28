@@ -59,15 +59,15 @@
 
                         {{-- Right-Aligned Add & Import Buttons --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
-                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
+                            {{-- <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
-                            </button>
+                            </button> --}}
 
-                            <a href="{{ route('auditee.audit.form') }}" class="btn bg-gradient-success w-100 w-md-auto"
+                            {{-- <a href="{{ route('auditee.audit.form') }}" class="btn bg-gradient-success w-100 w-md-auto"
                                 role="button" aria-pressed="true">
                                 + Add New
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
 
@@ -241,7 +241,7 @@
                                                         </a>
                                                     </div>
 
-                                                    <div>
+                                                    {{-- <div>
                                                         <a href="{{ route('auditee.audit.edit', $audit->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
                                                             role="button" aria-pressed="true" data-bs-toggle="tooltip"
@@ -303,7 +303,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </td>
                                         </tr>

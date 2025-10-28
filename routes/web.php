@@ -467,6 +467,12 @@ Route::put('/admin/staff/update/{id}', [TrainingController::class, 'update'])->n
 
 Route::get('/admin/staff/delete/{id}', [TrainingController::class, 'delete'])->name('admin.staff.delete')->middleware('Admin');
 
+// =================== Export ====================================================
+
+Route::get('/admin/staff/export', [TrainingController::class, 'export'])
+    ->name('admin.staff.export')
+    ->middleware('Admin');
+
 // =================== Import ====================================================
 
 Route::post('/admin/staff/import', [TrainingController::class, 'import'])->name('admin.staff.import')->middleware('Admin');

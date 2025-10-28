@@ -130,15 +130,15 @@
 
                         {{-- Right-Aligned Add + Import --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
-                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
+                            {{-- <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff">
                                 Excel
-                            </button>
+                            </button> --}}
 
-                            <a href="{{ route('auditor.audit.finding.reply.form', $auditFindings->id) }}"
+                            {{-- <a href="{{ route('auditor.audit.finding.reply.form', $auditFindings->id) }}"
                                 class="btn bg-gradient-success w-100 w-md-auto">
                                 + Add New
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
 
@@ -215,7 +215,8 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert"
+                                class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -369,7 +370,7 @@
                                                                 style="font-size: 1.5rem;">update</span>
                                                         </a>
 
-                                                        <button type="button" class="btn bg-transparent btn-sm m-0"
+                                                        {{-- <button type="button" class="btn bg-transparent btn-sm m-0"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#modal-delete-{{ $reply->id }}"
                                                             title="Delete">
@@ -404,7 +405,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -467,5 +468,18 @@
             const url = `/auditor/finding/${findingId}/reply/export/excel?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
         }
+
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
     </script>
 @endsection

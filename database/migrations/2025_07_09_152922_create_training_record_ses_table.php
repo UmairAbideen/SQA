@@ -16,17 +16,17 @@ return new class extends Migration
             $table->foreignId('staff_id')->constrained('staff')->onDelete('cascade')->onUpdate('cascade');
 
             // Changed all from boolean to string (text input)
-            $table->string('hf')->nullable();
-            $table->string('op')->nullable();
-            $table->string('cdccl')->nullable();
-            $table->string('tt')->nullable();
-            $table->string('sms')->nullable();
-            $table->string('ewis')->nullable();
-            $table->string('al')->nullable();
-            $table->string('at_1')->nullable();
-            $table->string('at_2')->nullable();
-            $table->string('at_3')->nullable();
-            $table->string('at_4')->nullable();
+            $table->date('hf')->nullable();
+            $table->date('op')->nullable();
+            $table->date('cdccl')->nullable();
+            $table->date('tt')->nullable();
+            $table->date('sms')->nullable();
+            $table->date('ewis')->nullable();
+            $table->date('al')->nullable();
+            $table->date('at_1')->nullable();
+            $table->date('at_2')->nullable();
+            $table->date('at_3')->nullable();
+            $table->date('at_4')->nullable();
 
             $table->timestamps();
         });

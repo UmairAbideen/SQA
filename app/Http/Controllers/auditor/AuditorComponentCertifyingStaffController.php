@@ -9,7 +9,7 @@ use App\Models\ComponentCertifyingStaff;
 use App\Models\TrainingRecordSes;
 use App\Imports\ComponentCertifyingStaffImport;
 use Maatwebsite\Excel\Facades\Excel;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AuditorComponentCertifyingStaffController extends Controller
 {

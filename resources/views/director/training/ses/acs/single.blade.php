@@ -29,16 +29,19 @@
                             Back</a>
                     </div>
 
-                    @if (session('status'))
+                    @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
-                                <small>{{ session('status') }}</small>
+                            <div id="status-alert"
+                                class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                                role="alert">
+                                <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                         </div>
                     @endif
+
                     <div class="card-body ps-3 pe-2 pb-5 pt-4">
                         <div class="table-responsive p-0">
                             <div class="row px-3">
@@ -149,5 +152,17 @@
             </div>
         </div>
     </div>
-    </div>
+    <script>
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
+    </script>
 @endsection

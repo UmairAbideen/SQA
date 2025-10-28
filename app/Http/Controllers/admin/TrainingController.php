@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\User;
 use App\Models\Staff;
+use App\Exports\StaffExport;
 use App\Imports\StaffImport;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -68,7 +69,7 @@ class TrainingController extends Controller
             'auth_no' => 'required|string|max:255',
             'function' => 'nullable|string|max:255',
             'ini_issue_date' => 'nullable|date',
-            'user_image' => 'nullable|file|mimes:jpeg,jpg,png,JPEG,JPG,PNG|max:5120', // max 5MB
+            'user_image' => 'nullable|file|mimes:jpeg,jpg,png,JPEG,JPG,PNG|max:5120',
         ]);
 
         // Prevent duplicate authorization type for same user
@@ -98,8 +99,11 @@ class TrainingController extends Controller
             'user_image' => $imagePath,
         ]);
 
-        return redirect()->route('admin.staff.form')->with('status', 'Staff authorization added successfully.');
+        // ✅ Redirect to the main view page
+        return redirect()->route('admin.training.view')
+            ->with('status', 'Staff authorization added successfully.');
     }
+
 
     public function edit($id)
     {
@@ -115,12 +119,12 @@ class TrainingController extends Controller
             'auth_no' => 'required|string|max:255',
             'function' => 'nullable|string|max:255',
             'ini_issue_date' => 'nullable|date',
-            'user_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // max 5MB
+            'user_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         $staff = Staff::findOrFail($id);
 
-        // 🧩 Check related data before changing auth_type
+        // Check related data before changing auth_type
         $hasRelatedData =
             $staff->aircraftCert()->exists() ||
             $staff->componentCert()->exists() ||
@@ -152,9 +156,8 @@ class TrainingController extends Controller
                 ->withInput();
         }
 
-        // 📸 Handle Image (if new one uploaded)
+        // 📸 Handle Image upload
         if ($request->hasFile('user_image')) {
-            // delete old image if exists
             if ($staff->user_image && Storage::disk('public')->exists($staff->user_image)) {
                 Storage::disk('public')->delete($staff->user_image);
             }
@@ -164,18 +167,20 @@ class TrainingController extends Controller
             $staff->user_image = $imagePath;
         }
 
-        // Update the rest of the data
+        // Update record
         $staff->update([
             'auth_type' => $request->auth_type,
             'auth_no' => $request->auth_no,
             'function' => $request->function,
             'ini_issue_date' => $request->ini_issue_date,
-            'user_image' => $staff->user_image, // retain old or new image
+            'user_image' => $staff->user_image,
         ]);
 
+        // ✅ Redirect back to view page
         return redirect()->route('admin.training.view')
-            ->with('status', 'Training Record - SA updated successfully.');
+            ->with('status', 'Staff authorization updated successfully.');
     }
+
 
     public function delete($id)
     {
@@ -194,5 +199,11 @@ class TrainingController extends Controller
         Excel::import(new StaffImport, $request->file('excel_file'));
 
         return back()->with('success', 'Staff imported successfully!');
+    }
+
+
+    public function export()
+    {
+        return Excel::download(new StaffExport, 'staff_records.xlsx');
     }
 }

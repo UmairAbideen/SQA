@@ -32,6 +32,8 @@
                             method="post" enctype="multipart/form-data">
                             @csrf
 
+                            <input type="hidden" name="is_draft" id="is_draft" value="no">
+
                             @if (session('status'))
                                 <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
                                     <small>{{ session('status') }}</small>
@@ -112,18 +114,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Reply By -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply By</label>
-                                        <input type="text" name="reply_by" class="form-control"
-                                            value="{{ old('reply_by', $auditReply->reply_by) }}">
-                                        @error('reply_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <hr>
 
                                 <!-- Attachment -->
@@ -147,103 +137,13 @@
                                     </div>
                                 </div>
 
-                                <!-- Target Date After Extension -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Target Date (After Extension)</label>
-                                        <input type="date" name="target_date_after_extension" class="form-control"
-                                            value="{{ old('target_date_after_extension', $auditReply->target_date_after_extension) }}">
-                                        @error('target_date_after_extension')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- QA Remarks -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>QA Remarks</label>
-                                        <textarea name="qa_remarks" class="form-control" rows="1">{{ old('qa_remarks', $auditReply->qa_remarks) }}</textarea>
-                                        @error('qa_remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Final Remarks -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Final Remarks</label>
-                                        <textarea name="final_remarks" class="form-control" rows="1">{{ old('final_remarks', $auditReply->final_remarks) }}</textarea>
-                                        @error('final_remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Closing Date -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closing Date</label>
-                                        <input type="date" name="closing_date" class="form-control"
-                                            value="{{ old('closing_date', $auditReply->closing_date) }}">
-                                        @error('closing_date')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Closing Remarks -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closing Remarks</label>
-                                        <textarea name="closing_remarks" class="form-control" rows="1">{{ old('closing_remarks', $auditReply->closing_remarks) }}</textarea>
-                                        @error('closing_remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Closed By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closed By</label>
-                                        <select name="closed_by" class="form-control">
-                                            <option value="">-- Select --</option>
-                                            <option value="{{ Auth::user()->username }}"
-                                                {{ old('closed_by', $auditReply->closed_by) == Auth::user()->username ? 'selected' : '' }}>
-                                                {{ Auth::user()->username }}
-                                            </option>
-                                        </select>
-                                        @error('closed_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Status -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Status</label>
-                                        <select name="status" class="form-control">
-                                            <option value="Open"
-                                                {{ old('status', $auditReply->status) != 'Close' ? 'selected' : '' }}>
-                                                Open
-                                            </option>
-                                            <option value="Close"
-                                                {{ old('status', $auditReply->status) == 'Close' ? 'selected' : '' }}>
-                                                Close
-                                            </option>
-                                        </select>
-                                        @error('status')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-
                                 <div class="mt-3">
-                                    <button type="submit" class="btn bg-gradient-success">Submit</button>
+                                    @if ($auditReply->draft === 'yes')
+                                        <button type="submit" class="btn bg-gradient-secondary"
+                                            onclick="setDraftStatus('yes')">Save as Draft</button>
+                                    @endif
+                                    <button type="submit" class="btn bg-gradient-success"
+                                        onclick="setDraftStatus('no')">Submit</button>
                                 </div>
                             </div>
                         </form>
@@ -252,4 +152,9 @@
             </div>
         </div>
     </div>
+    <script>
+        function setDraftStatus(value) {
+            document.getElementById('is_draft').value = value;
+        }
+    </script>
 @endsection

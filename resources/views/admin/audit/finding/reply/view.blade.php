@@ -214,7 +214,7 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -466,5 +466,17 @@
             const url = `/admin/finding/${findingId}/reply/export/excel?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
         }
+
+          // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
     </script>
 @endsection

@@ -66,7 +66,10 @@ class AuditorRampInspectionController extends Controller
             'created_at' => now(),
         ]);
 
-        return back()->with('status', 'Aircraft Inspection Form has been Created.');
+        $rampInspections = RampInspection::with('rampInspectionFinding')->get(); // preload findings
+
+        return redirect()->route('auditor.rampinspection.view', ['rampInspections' => $rampInspections])
+            ->with('status', 'Aircraft Inspeciton Form has been Created.');
     }
 
     public function edit($id)
@@ -110,7 +113,10 @@ class AuditorRampInspectionController extends Controller
             'updated_at' => now(),
         ]);
 
-        return back()->with('status', 'Aircraft Inspection Form updated successfully.');
+        $rampInspections = RampInspection::with('rampInspectionFinding')->get(); // preload findings
+
+        return redirect()->route('auditor.rampinspection.view', ['rampInspections' => $rampInspections])
+            ->with('status', 'Aircraft Inspection Form updated successfully.');
     }
 
     public function delete($id)
@@ -182,6 +188,23 @@ class AuditorRampInspectionController extends Controller
 
         return Excel::download(new RampInspectionExport($start, $end), "RampInspections_{$start}_to_{$end}.xlsx");
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -276,7 +299,9 @@ class AuditorRampInspectionController extends Controller
             'created_at' => now(),
         ]);
 
-        return back()->with('status', 'Aircraft Inspection Finding has been Created.');
+        return redirect()
+            ->route('auditor.rampinspection.finding.view', $rampInspection->id)
+            ->with('status', 'Aircraft Inspection Finding has been created successfully.');
     }
 
 
@@ -302,15 +327,19 @@ class AuditorRampInspectionController extends Controller
             'closed_by' => 'nullable|string|max:255',
         ]);
 
-        $rampInspectionFinding = RampInspectionFinding::find($id);
+        $rampInspectionFinding = RampInspectionFinding::findOrFail($id);
 
+        // Keep existing attachment by default
         $attachmentPath = $rampInspectionFinding->attachment;
 
+        // Handle new file upload
         if ($request->hasFile('attachment')) {
+            // Delete old attachment if exists
             if ($rampInspectionFinding->attachment && Storage::disk('public')->exists($rampInspectionFinding->attachment)) {
                 Storage::disk('public')->delete($rampInspectionFinding->attachment);
             }
 
+            // Save new attachment
             $attachmentPath = $request->file('attachment')->storeAs(
                 'assets/aircraft_inspection/finding/attachment',
                 time() . '_' . $request->file('attachment')->getClientOriginalName(),
@@ -318,16 +347,27 @@ class AuditorRampInspectionController extends Controller
             );
         }
 
+        // If status is "Close" or "Closed", fill closed_by automatically
+        $closedBy = $request->closed_by;
+
+        if (strtolower($request->status) === 'close' || strtolower($request->status) === 'closed') {
+            $closedBy = auth()->user()->username ?? 'System'; // fallback in case user is null
+        }
+
+        // Update the record
         $rampInspectionFinding->update([
             'code' => $request->code,
             'category' => $request->category,
             'finding' => $request->finding,
             'attachment' => $attachmentPath,
             'status' => $request->status,
-            'closed_by' => $request->closed_by,
+            'closed_by' => $closedBy,
         ]);
 
-        return back()->with('status', 'Aircraft Inspection Finding updated successfully.');
+        // Redirect back to the parent inspection view
+        return redirect()
+            ->route('auditor.rampinspection.finding.view', $rampInspectionFinding->rampInspection->id)
+            ->with('status', 'Aircraft Inspection Finding has been updated successfully.');
     }
 
 
@@ -453,19 +493,42 @@ class AuditorRampInspectionController extends Controller
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     //=============================== Reply (Auditor) ===============================
 
     public function replyView($id)
     {
-        $rampInspectionFinding = RampInspectionFinding::with('rampInspectionReply')
-            ->with('rampInspection')
-            ->where('id', $id)
-            ->first();
+        // Retrieve the specific RampInspectionFinding along with only non-draft replies
+        $rampInspectionFinding = RampInspectionFinding::with([
+            'rampInspection',
+            'rampInspectionReply' => function ($query) {
+                $query->where('draft', 'no'); // Only include replies where draft = 'no'
+            }
+        ])->where('id', $id)->firstOrFail();
 
         return view('auditor.rampinspection.finding.reply.view', [
             'rampInspectionFindings' => $rampInspectionFinding,
         ]);
     }
+
 
     public function replyform($id)
     {
@@ -484,10 +547,12 @@ class AuditorRampInspectionController extends Controller
             'remarks' => 'nullable|string|max:255',
             'remarks_by' => 'nullable|string|max:255',
             'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
+            'finding_id' => 'required|exists:ramp_inspection_findings,id',
         ]);
 
-        $rampInspectionFinding = RampInspectionFinding::find($request->finding_id);
+        $rampInspectionFinding = RampInspectionFinding::findOrFail($request->finding_id);
 
+        // Handle file upload
         $attachmentPath = null;
         if ($request->hasFile('attachment')) {
             $attachmentPath = $request->file('attachment')->storeAs(
@@ -497,17 +562,28 @@ class AuditorRampInspectionController extends Controller
             );
         }
 
+        // Get current authenticated user name
+        $currentUserName = auth()->user()->username ?? 'System';
+
+        // Automatically fill in reply_by and remarks_by if values exist
+        $replyBy = !empty($request->reply) ? $currentUserName : $request->reply_by;
+        $remarksBy = !empty($request->remarks) ? $currentUserName : $request->remarks_by;
+
+        // Create reply record
         $rampInspectionFinding->rampInspectionReply()->create([
             'reply' => $request->reply,
-            'reply_by' => $request->reply_by,
+            'reply_by' => $replyBy,
             'remarks' => $request->remarks,
-            'remarks_by' => $request->remarks_by,
+            'remarks_by' => $remarksBy,
             'attachment' => $attachmentPath,
             'status' => 'Open',
             'created_at' => now(),
         ]);
 
-        return back()->with('status', 'Finding Reply has been Created.');
+        // Redirect to the view page for this finding
+        return redirect()
+            ->route('auditor.rampinspection.finding.reply.view', $rampInspectionFinding->id)
+            ->with('status', 'Reply has been submitted successfully.');
     }
 
     public function replyEdit($id)
@@ -523,6 +599,7 @@ class AuditorRampInspectionController extends Controller
 
     public function replyUpdate(Request $request, $id)
     {
+        // Validate the incoming data
         $request->validate([
             'reply' => 'nullable|string|max:255',
             'reply_by' => 'nullable|string|max:255',
@@ -532,13 +609,20 @@ class AuditorRampInspectionController extends Controller
             'status' => 'nullable|string|max:255',
         ]);
 
-        $reply = RampInspectionReply::find($id);
+        // Find the record
+        $reply = RampInspectionReply::findOrFail($id);
+
+        // Preserve existing attachment
         $attachmentPath = $reply->attachment;
 
+        // Handle new attachment upload
         if ($request->hasFile('attachment')) {
+            // Delete old attachment if it exists
             if ($reply->attachment && Storage::disk('public')->exists($reply->attachment)) {
                 Storage::disk('public')->delete($reply->attachment);
             }
+
+            // Save new file
             $attachmentPath = $request->file('attachment')->storeAs(
                 'assets/aircraft_inspection/reply/attachment',
                 time() . '_' . $request->file('attachment')->getClientOriginalName(),
@@ -546,16 +630,39 @@ class AuditorRampInspectionController extends Controller
             );
         }
 
+        // Determine who should be marked as reply_by and remarks_by
+        $replyBy = $request->reply_by;
+        $remarksBy = $request->remarks_by;
+
+        $currentUserName = auth()->user()->username ?? 'System';
+
+        // Auto-fill "reply_by" if a reply is provided
+        if (!empty($request->reply)) {
+            $replyBy = $currentUserName;
+        }
+
+        // Auto-fill "remarks_by" if remarks are provided
+        if (!empty($request->remarks)) {
+            $remarksBy = $currentUserName;
+        }
+
+        // Update the record
         $reply->update([
             'reply' => $request->reply,
-            'reply_by' => $request->reply_by,
+            'reply_by' => $replyBy,
             'remarks' => $request->remarks,
-            'remarks_by' => $request->remarks_by,
+            'remarks_by' => $remarksBy,
             'attachment' => $attachmentPath,
             'status' => $request->status,
         ]);
 
-        return back()->with('status', 'Finding Reply has been updated successfully.');
+        // Get parent finding
+        $rampInspectionFinding = $reply->rampInspectionFinding;
+
+        // Redirect back to the finding reply view
+        return redirect()
+            ->route('auditor.rampinspection.finding.reply.view', $rampInspectionFinding->id)
+            ->with('status', 'Finding Reply has been updated successfully.');
     }
 
     public function replyDelete($id)

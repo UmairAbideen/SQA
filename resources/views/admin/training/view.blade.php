@@ -79,7 +79,7 @@
                             <div class="pt-1 d-flex justify-content-center justify-content-md-end w-100 w-md-auto">
                                 <button type="button" class="btn bg-gradient-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#modal-import-staff" title="Import Staff & SES">
-                                    Import Excel
+                                    Excel
                                 </button>
                             </div>
                         </div>
@@ -99,52 +99,66 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <p>Select Excel file to import:</p>
+
+                                        <p>Export Excel file:</p>
+
+                                        <div class="col-12 col-md-auto pt-2 pt-md-3">
+                                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto"
+                                                onclick="exportStaffExcel()">
+                                                Export
+                                            </button>
+                                        </div>
+
+
+                                        <p class="pt-2">Select Excel file to import:</p>
 
                                         <!-- Scrollable Container if needed -->
                                         <div class="overflow-auto" style="max-height: 60vh; padding-right: 5px;">
 
-                                            <!-- Repeat for each table below -->
 
+                                            <!-- Repeat for each table below -->
                                             @php
                                                 $imports = [
-                                                    ['label' => 'Staff', 'route' => 'admin.staff.import'],
                                                     [
-                                                        'label' => 'Aircraft Certifying Staff',
-                                                        'route' => 'admin.aircraft.import',
+                                                        'label' => 'Staff & Authorizations',
+                                                        'route' => 'admin.staff.import',
                                                     ],
-                                                    [
-                                                        'label' => 'Component Certifying Staff',
-                                                        'route' => 'admin.component.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Quality Auditors',
-                                                        'route' => 'admin.quality.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Qualifying Mechanics',
-                                                        'route' => 'admin.qm.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Store Quality Inspectors',
-                                                        'route' => 'admin.storeinspector.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Standard Lab Personnel',
-                                                        'route' => 'admin.standard_lab.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Training Record SES',
-                                                        'route' => 'admin.training_ses.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Authorized Auditors',
-                                                        'route' => 'admin.auditor.import',
-                                                    ],
-                                                    [
-                                                        'label' => 'Training Record SA',
-                                                        'route' => 'admin.training_sa.import',
-                                                    ],
+                                                    // [
+                                                    //     'label' => 'Aircraft Certifying Staff',
+                                                    //     'route' => 'admin.aircraft.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Component Certifying Staff',
+                                                    //     'route' => 'admin.component.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Quality Auditors',
+                                                    //     'route' => 'admin.quality.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Qualifying Mechanics',
+                                                    //     'route' => 'admin.qm.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Store Quality Inspectors',
+                                                    //     'route' => 'admin.storeinspector.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Standard Lab Personnel',
+                                                    //     'route' => 'admin.standard_lab.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Training Record SES',
+                                                    //     'route' => 'admin.training_ses.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Authorized Auditors',
+                                                    //     'route' => 'admin.auditor.import',
+                                                    // ],
+                                                    // [
+                                                    //     'label' => 'Training Record SA',
+                                                    //     'route' => 'admin.training_sa.import',
+                                                    // ],
                                                 ];
                                             @endphp
 
@@ -177,7 +191,8 @@
 
                     @if (session('status'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
+                            <div id="status-alert" class="alert alert-secondary alert-dismissible text-white fade show"
+                                role="alert">
                                 <small>{{ session('status') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -456,7 +471,8 @@
                                                                     <div class="modal-body  text-break">
                                                                         <p>Do you want to remove this
                                                                             authorization
-                                                                            for <br><strong>{{ $staff->user->username }}</strong>?
+                                                                            for
+                                                                            <br><strong>{{ $staff->user->username }}</strong>?
                                                                         </p>
                                                                     </div>
                                                                     <div class="modal-footer">
@@ -550,6 +566,23 @@
 
             // Initialize on page load
             document.addEventListener('DOMContentLoaded', filterAuthTypes);
+
+
+            function exportStaffExcel() {
+                window.location.href = "{{ route('admin.staff.export') }}";
+            }
+
+            // Wait for DOM to load
+            document.addEventListener('DOMContentLoaded', function() {
+                const alertBox = document.getElementById('status-alert');
+                if (alertBox) {
+                    setTimeout(() => {
+                        // Trigger Bootstrap's native dismiss event
+                        const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                        alert.close();
+                    }, 3000); // 3 seconds
+                }
+            });
         </script>
     </div>
 @endsection

@@ -49,7 +49,8 @@
                                         <li><a class="dropdown-item"
                                                 href="{{ route('auditor.qualifiedmechanic.create') }}">Add Qualifying
                                                 Mechanics</a></li>
-                                        <li><a class="dropdown-item" href="{{ route('auditor.store_inspector.create') }}">Add
+                                        <li><a class="dropdown-item"
+                                                href="{{ route('auditor.store_inspector.create') }}">Add
                                                 Store Quality
                                                 Inspector</a></li>
                                         <li><a class="dropdown-item" href="{{ route('auditor.standard_lab.create') }}">Add
@@ -76,12 +77,12 @@
 
 
                             <!-- Right: Import Button -->
-                            <div class="pt-1 d-flex justify-content-center justify-content-md-end w-100 w-md-auto">
+                            {{-- <div class="pt-1 d-flex justify-content-center justify-content-md-end w-100 w-md-auto">
                                 <button type="button" class="btn bg-gradient-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                     Import Excel
                                 </button>
-                            </div>
+                            </div> --}}
                         </div>
 
                         <!-- Import Modal -->
@@ -177,7 +178,8 @@
 
                     @if (session('status'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
+                            <div id="status-alert" class="alert alert-secondary alert-dismissible text-white fade show"
+                                role="alert">
                                 <small>{{ session('status') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -456,7 +458,8 @@
                                                                     <div class="modal-body  text-break">
                                                                         <p>Do you want to remove this
                                                                             authorization
-                                                                            for <br><strong>{{ $staff->user->username }}</strong>?
+                                                                            for
+                                                                            <br><strong>{{ $staff->user->username }}</strong>?
                                                                         </p>
                                                                     </div>
                                                                     <div class="modal-footer">
@@ -550,6 +553,19 @@
 
             // Initialize on page load
             document.addEventListener('DOMContentLoaded', filterAuthTypes);
+
+
+            // Wait for DOM to load
+            document.addEventListener('DOMContentLoaded', function() {
+                const alertBox = document.getElementById('status-alert');
+                if (alertBox) {
+                    setTimeout(() => {
+                        // Trigger Bootstrap's native dismiss event
+                        const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                        alert.close();
+                    }, 3000); // 3 seconds
+                }
+            });
         </script>
     </div>
 @endsection

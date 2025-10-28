@@ -105,7 +105,10 @@ class AuditorTrainingRecordSaController extends Controller
             'ewis' => $request->ewis,
         ]);
 
-        return redirect()->back()->with('status', 'Training Record SA updated successfully.');
+        // ✅ Redirect to the show route with success message
+        return redirect()
+            ->route('auditor.training_sa.single', $record->id)
+            ->with('status', 'Training Record SA updated successfully.');
     }
 
     public function delete($id)
@@ -131,4 +134,3 @@ class AuditorTrainingRecordSaController extends Controller
         return back()->with('success', 'Training Record SA imported successfully!');
     }
 }
-

@@ -110,18 +110,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Reply By -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply By</label>
-                                        <input type="text" name="reply_by" class="form-control"
-                                            value="{{ old('reply_by') }}">
-                                        @error('reply_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <hr>
 
                                 <!-- Attachment -->

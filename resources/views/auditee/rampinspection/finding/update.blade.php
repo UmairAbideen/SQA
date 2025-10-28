@@ -100,24 +100,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Closed By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closed By</label>
-                                        <select name="closed_by" class="form-control">
-                                            <option value="">-- Select --</option>
-                                            <option value="{{ Auth::user()->username }}"
-                                                {{ old('closed_by', $rampinspectionfinding->closed_by) == Auth::user()->username ? 'selected' : '' }}>
-                                                {{ Auth::user()->username }}
-                                            </option>
-                                        </select>
-                                        @error('closed_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-
                                 <div class="col-md-6 px-3">
                                     <div class="align-self-center my-4">
                                         <input type="file" name="attachment" class="btn btn-sm bg-gradient-secondary">

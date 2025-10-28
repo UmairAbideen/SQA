@@ -110,18 +110,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Reply By -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply By</label>
-                                        <input type="text" name="reply_by" class="form-control"
-                                            value="{{ old('reply_by') }}">
-                                        @error('reply_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <hr>
 
                                 <!-- Attachment -->
@@ -179,29 +167,6 @@
                                         @enderror
                                     </div>
                                 </div>
-
-                                {{-- <!-- Closing Date -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closing Date</label>
-                                        <input type="date" name="closing_date" class="form-control"
-                                            value="{{ old('closing_date') }}">
-                                        @error('closing_date')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div> --}}
-
-                                {{-- <!-- Closing Remarks -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closing Remarks</label>
-                                        <textarea name="closing_remarks" class="form-control" rows="1">{{ old('closing_remarks') }}</textarea>
-                                        @error('closing_remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div> --}}
 
                                 <!-- Hidden Field-->
                                 <div class="col-md-6 px-3">

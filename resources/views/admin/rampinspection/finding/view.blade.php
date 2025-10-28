@@ -164,7 +164,8 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h6 class="modal-title font-weight-normal">Aircraft Inspection Finding Import / Export</h6>
+                                    <h6 class="modal-title font-weight-normal">Aircraft Inspection Finding Import / Export
+                                    </h6>
                                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
@@ -229,7 +230,7 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -581,5 +582,17 @@ Serene Eng. Services
             const url = `/admin/rampinspection/${rampId}/finding/export/excel?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
         }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
     </script>
 @endsection

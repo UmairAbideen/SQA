@@ -25,6 +25,7 @@ class AuditReply extends Model
         'qa_remarks', // QA remarks
         'closed_by', // Person who closed the issue
         'final_remarks', // Final remarks
+        'draft',
         'status', // Status of the reply
         'closing_date', // Closing date of the reply
         'closing_remarks', // Closing remarks

@@ -55,36 +55,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Reply By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply By</label>
-                                        <input type="text" name="reply_by" class="form-control"
-                                            value="{{ old('reply_by', $rampInspectionReply->reply_by ?? '') }}">
-                                        @error('reply_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Remarks -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Remarks</label>
                                         <textarea name="remarks" class="form-control" rows="1">{{ old('remarks', $rampInspectionReply->remarks ?? '') }}</textarea>
                                         @error('remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Remarks By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Remarks By</label>
-                                        <input type="text" name="remarks_by" class="form-control"
-                                            value="{{ old('remarks_by', $rampInspectionReply->remarks_by ?? '') }}">
-                                        @error('remarks_by')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>

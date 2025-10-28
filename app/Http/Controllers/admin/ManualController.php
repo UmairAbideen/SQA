@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class ManualController extends Controller
 {
+    // See admin controller
 
     public function view()
     {
@@ -51,7 +52,8 @@ class ManualController extends Controller
             'created_at' => now(),
         ]);
 
-        return back()->with('status', 'New Document has been Uploaded.');
+        return redirect()->route('admin.dashboard')
+            ->with('status', 'New Document has been Uploaded.');
     }
 
 
@@ -110,7 +112,8 @@ class ManualController extends Controller
             'revision_no' => $request->revision_no,
         ]);
 
-        return back()->with('status', 'Policy updated successfully.');
+        return redirect()->route('admin.dashboard')
+            ->with('status', 'Document updated successfully.');
     }
 
 
@@ -124,6 +127,6 @@ class ManualController extends Controller
         }
 
         $policy->delete();
-        return back()->with('status', 'Policy document has been removed.');
+        return back()->with('status', 'Document has been removed.');
     }
 }

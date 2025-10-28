@@ -28,6 +28,7 @@ return new class extends Migration
             $table->text('qa_remarks')->nullable(); // QA remarks
             $table->string('closed_by')->nullable(); // Person who closed the issue
             $table->text('final_remarks')->nullable(); // Final remarks
+            $table->string('draft')->nullable(); // Current draft status
             $table->string('status')->nullable(); // Status of the reply
             $table->date('closing_date')->nullable(); // Closing date of the reply
             $table->text('closing_remarks')->nullable(); // Closing remarks

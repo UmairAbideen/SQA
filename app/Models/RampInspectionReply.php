@@ -16,6 +16,7 @@ class RampInspectionReply extends Model
         'remarks', // Additional remarks
         'remarks_by', // Person who provided the remarks
         'attachment', // Attachment related to the reply
+        'draft',
         'status', // Current status of the reply
     ];
 

@@ -215,7 +215,7 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -247,6 +247,8 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment
+                                        </th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Draft
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment
@@ -321,6 +323,13 @@
 
                                                 <td class="align-middle text-center text-sm text-wrap">
                                                     {{ $reply->attachment_detail ?? 'None' }}
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    @if ($reply->draft === 'yes')
+                                                        Not Submitted
+                                                    @else
+                                                        Submitted
+                                                    @endif
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
                                                     {{ $reply->target_date_after_extension ? \Carbon\Carbon::parse($reply->target_date_after_extension)->format('d/M/y') : 'None' }}
@@ -467,5 +476,19 @@
             const url = `/auditee/finding/${findingId}/reply/export/excel?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
         }
+
+
+
+          // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
     </script>
 @endsection

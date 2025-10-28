@@ -221,6 +221,7 @@ class AuditeeAuditController extends Controller
 
     public function findingCreate(Request $request)
     {
+        // Validate input and file
         $request->validate([
             'rule_reference' => 'nullable|string|max:255',
             'finding' => 'nullable|string',
@@ -233,8 +234,10 @@ class AuditeeAuditController extends Controller
             'auditor' => 'nullable|string|max:255',
         ]);
 
+        // Find related audit
         $audit = Audit::findOrFail($request->audit_id);
 
+        // Handle file upload
         $attachmentPath = null;
         if ($request->hasFile('attachment')) {
             $attachmentPath = $request->file('attachment')->storeAs(
@@ -244,6 +247,13 @@ class AuditeeAuditController extends Controller
             );
         }
 
+        // Get authenticated username
+        $currentUserName = auth()->user()->username ?? 'System';
+
+        // Auto-fill auditor name if nature_of_finding is provided
+        $auditorName = !empty($request->nature_of_finding) ? $currentUserName : $request->auditor;
+
+        // Create finding
         $audit->finding()->create([
             'rule_reference' => $request->rule_reference,
             'finding' => $request->finding,
@@ -253,7 +263,7 @@ class AuditeeAuditController extends Controller
             'finding_level' => $request->finding_level,
             'repeated_finding' => $request->repeated_finding,
             'nature_of_finding' => $request->nature_of_finding,
-            'auditor' => $request->auditor,
+            'auditor' => $auditorName,
             'status' => 'Open',
             'created_at' => now(),
         ]);
@@ -286,8 +296,10 @@ class AuditeeAuditController extends Controller
 
         $auditFinding = AuditFinding::findOrFail($id);
 
+        // Keep existing attachment by default
         $attachmentPath = $auditFinding->attachment;
 
+        // Replace with new one if uploaded
         if ($request->hasFile('attachment')) {
             if ($auditFinding->attachment && Storage::disk('public')->exists($auditFinding->attachment)) {
                 Storage::disk('public')->delete($auditFinding->attachment);
@@ -300,6 +312,13 @@ class AuditeeAuditController extends Controller
             );
         }
 
+        // Get authenticated username
+        $currentUserName = auth()->user()->username ?? 'System';
+
+        // Auto-fill auditor name if nature_of_finding is provided
+        $auditorName = !empty($request->nature_of_finding) ? $currentUserName : $request->auditor;
+
+        // Update finding record
         $auditFinding->update([
             'rule_reference' => $request->rule_reference,
             'finding' => $request->finding,
@@ -308,7 +327,7 @@ class AuditeeAuditController extends Controller
             'finding_level' => $request->finding_level,
             'repeated_finding' => $request->repeated_finding,
             'nature_of_finding' => $request->nature_of_finding,
-            'auditor' => $request->auditor,
+            'auditor' => $auditorName,
             'status' => $request->status,
             'attachment' => $attachmentPath,
             'updated_at' => now(),
@@ -473,18 +492,18 @@ class AuditeeAuditController extends Controller
             'root_cause' => 'required|string',
             'corrective_action' => 'required|string',
             'preventive_action' => 'required|string',
-            'reply_by' => 'required|string|max:255',
             'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'attachment_detail' => 'nullable|string',
-            'target_date_after_extension' => 'nullable|date',
-            'qa_remarks' => 'nullable|string',
-            'final_remarks' => 'nullable|string',
+            'is_draft' => 'nullable|string|in:yes,no',
+            // 'target_date_after_extension' => 'nullable|date',
+            // 'qa_remarks' => 'nullable|string',
+            // 'final_remarks' => 'nullable|string',
         ]);
 
-        $auditFinding = AuditFinding::find($request->finding_id);
+        $auditFinding = AuditFinding::findOrFail($request->finding_id);
 
+        // Handle file upload
         $attachmentPath = null;
-
         if ($request->hasFile('attachment')) {
             $attachmentPath = $request->file('attachment')->storeAs(
                 'assets/audit/reply/attachment',
@@ -493,6 +512,11 @@ class AuditeeAuditController extends Controller
             );
         }
 
+        // Automatically set reply_by if preventive_action is filled
+        $currentUserName = auth()->user()->username ?? 'System';
+        $replyBy = !empty($request->preventive_action) ? $currentUserName : $request->reply_by;
+
+        // Create the reply
         $auditFinding->reply()->create([
             'date' => $request->date,
             'time' => $request->time,
@@ -500,17 +524,22 @@ class AuditeeAuditController extends Controller
             'root_cause' => $request->root_cause,
             'corrective_action' => $request->corrective_action,
             'preventive_action' => $request->preventive_action,
-            'reply_by' => $request->reply_by,
+            'reply_by' => $replyBy, // Automatically filled if preventive_action exists
             'attachment' => $attachmentPath,
             'attachment_detail' => $request->attachment_detail,
-            'target_date_after_extension' => $request->target_date_after_extension,
-            'qa_remarks' => $request->qa_remarks,
-            'final_remarks' => $request->final_remarks,
-            'status' => 'Open',
+            'draft' => $request->is_draft === 'yes' ? 'yes' : 'no',
+            // 'target_date_after_extension' => $request->target_date_after_extension,
+            // 'qa_remarks' => $request->qa_remarks,
+            // 'final_remarks' => $request->final_remarks,
+            // 'status' => 'Open',
             'created_at' => now(),
         ]);
 
-        return back()->with('status', 'Finding Reply has been Created.');
+        return redirect()
+            ->route('auditee.audit.finding.reply.view', $auditFinding->id)
+            ->with('status', $request->is_draft === 'yes'
+                ? 'Reply has been saved as draft.'
+                : 'Reply has been submitted successfully.');
     }
 
     public function replyEdit($id)
@@ -534,19 +563,21 @@ class AuditeeAuditController extends Controller
             'reply_by' => 'nullable|string|max:255',
             'attachment' => 'nullable|file|mimes:jpeg,png,jpg,pdf|max:2048',
             'attachment_detail' => 'nullable|string',
-            'target_date_after_extension' => 'nullable|date',
-            'qa_remarks' => 'nullable|string',
-            'final_remarks' => 'nullable|string',
-            'closing_date' => 'nullable|date',
-            'closing_remarks' => 'nullable|string',
-            'closed_by' => 'nullable|string|max:255',
-            'status' => 'nullable|string|max:255',
+            'is_draft' => 'nullable|string|in:yes,no',
+            // 'target_date_after_extension' => 'nullable|date',
+            // 'qa_remarks' => 'nullable|string',
+            // 'final_remarks' => 'nullable|string',
+            // 'closing_date' => 'nullable|date',
+            // 'closing_remarks' => 'nullable|string',
+            // 'closed_by' => 'nullable|string|max:255',
+            // 'status' => 'nullable|string|max:255',
         ]);
 
-        $reply = AuditReply::find($id);
+        $reply = AuditReply::findOrFail($id);
+         $auditFinding = $reply->auditFinding; // Assuming relation is defined in model
 
+        // Handle file attachment update
         $attachmentPath = $reply->attachment;
-
         if ($request->hasFile('attachment')) {
             if ($reply->attachment && Storage::disk('public')->exists($reply->attachment)) {
                 Storage::disk('public')->delete($reply->attachment);
@@ -559,6 +590,20 @@ class AuditeeAuditController extends Controller
             );
         }
 
+        // Get current authenticated username
+        $currentUserName = auth()->user()->username ?? 'System';
+
+        // Automatically fill reply_by if preventive_action is filled
+        $replyBy = !empty($request->preventive_action)
+            ? $currentUserName
+            : $request->reply_by;
+
+        // // Automatically fill closed_by and closing_date if status is "Close"
+        // $isClosed = strtolower($request->status) === 'close';
+        // $closedBy = $isClosed ? $currentUserName : $request->closed_by;
+        // $closingDate = $isClosed ? now()->toDateString() : $request->closing_date;
+
+        // Update the record
         $reply->update([
             'date' => $request->date,
             'time' => $request->time,
@@ -566,19 +611,25 @@ class AuditeeAuditController extends Controller
             'root_cause' => $request->root_cause,
             'corrective_action' => $request->corrective_action,
             'preventive_action' => $request->preventive_action,
-            'reply_by' => $request->reply_by,
+            'reply_by' => $replyBy,
             'attachment' => $attachmentPath,
             'attachment_detail' => $request->attachment_detail,
-            'target_date_after_extension' => $request->target_date_after_extension,
-            'qa_remarks' => $request->qa_remarks,
-            'final_remarks' => $request->final_remarks,
-            'closing_date' => $request->closing_date,
-            'closing_remarks' => $request->closing_remarks,
-            'closed_by' => $request->closed_by,
-            'status' => $request->status,
+            'draft' => $request->is_draft === 'yes' ? 'yes' : 'no',
+            // 'target_date_after_extension' => $request->target_date_after_extension,
+            // 'qa_remarks' => $request->qa_remarks,
+            // 'final_remarks' => $request->final_remarks,
+            // 'closing_date' => $closingDate,
+            // 'closing_remarks' => $request->closing_remarks,
+            // 'closed_by' => $closedBy,
+            // 'status' => $request->status,
+            'updated_at' => now(),
         ]);
 
-        return back()->with('status', 'Finding Reply has been updated successfully.');
+        return redirect()
+            ->route('auditee.audit.finding.reply.view', $auditFinding->id)
+            ->with('status', $request->is_draft === 'yes'
+                ? 'Reply has been saved as draft.'
+                : 'Finding Reply has been updated successfully.');
     }
 
     public function replyDelete($id)

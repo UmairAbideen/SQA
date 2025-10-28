@@ -51,7 +51,8 @@ class UsersController extends Controller
             'created_at' => now(),
         ]);
 
-        return back()->with('status', 'New User is Successfully Created.');
+        return redirect()->route('admin.users.view')
+            ->with('status', 'New User is Successfully Created.');
     }
 
     public function single($id)
@@ -98,7 +99,8 @@ class UsersController extends Controller
         $user->updated_at = now();
         $user->save();
 
-        return back()->with('status', 'User Details Updated Successfully.');
+        return redirect()->route('admin.users.view')
+            ->with('status', 'User Details Updated Successfully.');
     }
 
 

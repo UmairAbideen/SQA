@@ -44,6 +44,7 @@ class AircraftCertifyingStaffController extends Controller
         return redirect()->route('admin.training.view')->with('status', 'Aircraft Certifying Staff added.');
     }
 
+
     public function edit($id)
     {
         $record = AircraftCertifyingStaff::findOrFail($id);
@@ -71,9 +72,11 @@ class AircraftCertifyingStaffController extends Controller
             'aml_expiry'
         ]));
 
-        return redirect()->route('admin.training.acs.single', ['id' => $id])
-            ->with('status', 'Record updated successfully.');
+        return redirect()
+            ->route('admin.training.acs.single', $id)
+            ->with('status', 'Aircraft Certifying Staff record has been updated successfully.');
     }
+
 
     public function delete($id)
     {

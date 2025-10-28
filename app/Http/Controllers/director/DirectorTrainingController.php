@@ -65,7 +65,7 @@ class DirectorTrainingController extends Controller
             'auth_no' => 'required|string|max:255',
             'function' => 'nullable|string|max:255',
             'ini_issue_date' => 'nullable|date',
-            'user_image' => 'nullable|file|mimes:jpeg,jpg,png,JPEG,JPG,PNG|max:5120', // max 5MB
+            'user_image' => 'nullable|file|mimes:jpeg,jpg,png,JPEG,JPG,PNG|max:5120',
         ]);
 
         // Prevent duplicate authorization type for same user
@@ -79,7 +79,7 @@ class DirectorTrainingController extends Controller
             ])->withInput();
         }
 
-        // 📸 Handle Image Upload
+        // 📸 Handle image upload
         $imagePath = null;
         if ($request->hasFile('user_image')) {
             $imageName = time() . '_' . $request->file('user_image')->getClientOriginalName();
@@ -95,8 +95,12 @@ class DirectorTrainingController extends Controller
             'user_image' => $imagePath,
         ]);
 
-        return redirect()->route('director.staff.form')->with('status', 'Staff authorization added successfully.');
+        // ✅ Redirect to staff list (main view)
+        return redirect()
+            ->route('director.training.view')
+            ->with('status', 'Staff authorization added successfully.');
     }
+
 
     public function edit($id)
     {
@@ -105,19 +109,19 @@ class DirectorTrainingController extends Controller
         return view('director.training.update', compact('staff', 'users'));
     }
 
-     public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'auth_type' => 'required|string|max:255',
             'auth_no' => 'required|string|max:255',
             'function' => 'nullable|string|max:255',
             'ini_issue_date' => 'nullable|date',
-            'user_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120', // max 5MB
+            'user_image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
         ]);
 
         $staff = Staff::findOrFail($id);
 
-        // 🧩 Check related data before changing auth_type
+        // Prevent editing auth_type if related data exists
         $hasRelatedData =
             $staff->aircraftCert()->exists() ||
             $staff->componentCert()->exists() ||
@@ -137,7 +141,7 @@ class DirectorTrainingController extends Controller
                 ->withInput();
         }
 
-        // Prevent duplicate authorization types for same user
+        // Prevent duplicate authorization type for the same user
         $exists = Staff::where('user_id', $staff->user_id)
             ->where('auth_type', $request->auth_type)
             ->where('id', '!=', $staff->id)
@@ -149,30 +153,31 @@ class DirectorTrainingController extends Controller
                 ->withInput();
         }
 
-        // 📸 Handle Image (if new one uploaded)
+        // 📸 Handle image upload
         if ($request->hasFile('user_image')) {
-            // delete old image if exists
             if ($staff->user_image && Storage::disk('public')->exists($staff->user_image)) {
                 Storage::disk('public')->delete($staff->user_image);
             }
 
             $imageName = time() . '_' . $request->file('user_image')->getClientOriginalName();
-            $imagePath = $request->file('user_image')->storeAs('uploads/staff_images', $imageName, 'public');
-            $staff->user_image = $imagePath;
+            $staff->user_image = $request->file('user_image')->storeAs('uploads/staff_images', $imageName, 'public');
         }
 
-        // Update the rest of the data
+        // Update record
         $staff->update([
             'auth_type' => $request->auth_type,
             'auth_no' => $request->auth_no,
             'function' => $request->function,
             'ini_issue_date' => $request->ini_issue_date,
-            'user_image' => $staff->user_image, // retain old or new image
+            'user_image' => $staff->user_image,
         ]);
 
-        return redirect()->route('director.training.view')
-            ->with('status', 'Training Record - SA updated successfully.');
+        // ✅ Redirect back to the staff list page
+        return redirect()
+            ->route('director.training.view')
+            ->with('status', 'Staff authorization updated successfully.');
     }
+
 
     public function delete($id)
     {

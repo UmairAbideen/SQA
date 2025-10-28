@@ -132,18 +132,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Auditor -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Auditor</label>
-                                        <input type="text" name="auditor" class="form-control"
-                                            value="{{ old('auditor', $finding->auditor) }}">
-                                        @error('auditor')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Status -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">

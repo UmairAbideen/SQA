@@ -31,7 +31,8 @@
 
                     @if (session('status'))
                         <div class="px-3">
-                            <div class="alert alert-secondary alert-dismissible text-white fade show" role="alert">
+                            <div id="status-alert" class="alert alert-secondary alert-dismissible text-white fade show"
+                                role="alert">
                                 <small>{{ session('status') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -150,4 +151,18 @@
         </div>
     </div>
     </div>
+
+    <script>
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
+    </script>
 @endsection

@@ -18,9 +18,10 @@ return new class extends Migration
             $table->text('remarks')->nullable(); // Additional remarks
             $table->string('remarks_by')->nullable(); // Person who provided the remarks
             $table->string('attachment')->nullable(); // Attachment related to the reply
+            $table->string('draft')->nullable(); // Current draft status
             $table->string('status')->nullable(); // Current status of the reply
             $table->foreignId('ramp_inspection_finding_id')->references('id')->on('ramp_inspection_findings')
-            ->onDelete('cascade')->onUpdate('cascade');
+                ->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps(); // Created at and updated at timestamps
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('ramp_inspection_replies');
     }
 };

@@ -14,22 +14,22 @@ return new class extends Migration
         Schema::create('training_record_sa', function (Blueprint $table) {
             $table->id();
             $table->foreignId('staff_id')->constrained('staff')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('pcca_regulation')->nullable();
-            $table->string('mcm')->nullable();
-            $table->string('amp')->nullable();
-            $table->string('reliability')->nullable();
-            $table->string('ad_sb')->nullable();
-            $table->string('maintenance')->nullable();
-            $table->string('record_keeping')->nullable();
-            $table->string('quality_monitoring')->nullable();
-            $table->string('level1_training')->nullable();
-            $table->string('fuel_tank')->nullable();
-            $table->string('quality_auditor')->nullable();
-            $table->string('ramp_insp')->nullable();
-            $table->string('engine_health')->nullable();
-            $table->string('hf')->nullable();
-            $table->string('sms')->nullable();
-            $table->string('ewis')->nullable();
+            $table->date('pcca_regulation')->nullable();
+            $table->date('mcm')->nullable();
+            $table->date('amp')->nullable();
+            $table->date('reliability')->nullable();
+            $table->date('ad_sb')->nullable();
+            $table->date('maintenance')->nullable();
+            $table->date('record_keeping')->nullable();
+            $table->date('quality_monitoring')->nullable();
+            $table->date('level1_training')->nullable();
+            $table->date('fuel_tank')->nullable();
+            $table->date('quality_auditor')->nullable();
+            $table->date('ramp_insp')->nullable();
+            $table->date('engine_health')->nullable();
+            $table->date('hf')->nullable();
+            $table->date('sms')->nullable();
+            $table->date('ewis')->nullable();
             $table->timestamps();
         });
     }

@@ -155,14 +155,14 @@
 
                         {{-- Right-Aligned Import + Add New --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
-                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
+                            {{-- <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
-                            </button>
+                            </button> --}}
 
-                            <a href="{{ route('auditor.rampinspection.finding.reply.form', $rampInspectionFindings->id) }}"
+                            {{-- <a href="{{ route('auditor.rampinspection.finding.reply.form', $rampInspectionFindings->id) }}"
                                 class="btn bg-gradient-success w-100 w-md-auto">
-                                + Add New
+                                + Add New --}}
                             </a>
                         </div>
                     </div>
@@ -177,7 +177,8 @@
                         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h6 class="modal-title font-weight-normal">Aircraft Inspection Reply Import / Export</h6>
+                                    <h6 class="modal-title font-weight-normal">Aircraft Inspection Reply Import / Export
+                                    </h6>
                                     <button type="button" class="btn-close text-dark" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                                 </div>
@@ -239,11 +240,9 @@
                     </div>
 
 
-
-
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -265,7 +264,7 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Reply By
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Reply By
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Remarks
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Remarks
                                             By
@@ -354,24 +353,24 @@
                                                         </a>
 
 
-                                                        <a href="{{ route('auditor.rampinspection.finding.reply.edit', $reply->id) }}"
+                                                        {{-- <a href="{{ route('auditor.rampinspection.finding.reply.edit', $reply->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
                                                             title="update">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">update</span>
-                                                        </a>
+                                                        </a> --}}
 
                                                         <!-- Delete Button with Modal -->
-                                                        <button type="button" class="btn bg-transparent btn-sm m-0"
+                                                        {{-- <button type="button" class="btn bg-transparent btn-sm m-0"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#modal-delete-{{ $reply->id }}"
                                                             title="delete">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">delete</span>
-                                                        </button>
+                                                        </button> --}}
 
                                                         <!-- Modal -->
-                                                        <div class="modal fade" id="modal-delete-{{ $reply->id }}"
+                                                        {{-- <div class="modal fade" id="modal-delete-{{ $reply->id }}"
                                                             tabindex="-1" role="dialog"
                                                             aria-labelledby="modal-delete-{{ $reply->id }}"
                                                             aria-hidden="true">
@@ -398,7 +397,7 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> --}}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -462,5 +461,19 @@
                 `/auditor/rampinspection/finding/${findingId}/reply/export/excel?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
         }
+
+
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.getElementById('status-alert');
+            if (alertBox) {
+                setTimeout(() => {
+                    // Trigger Bootstrap's native dismiss event
+                    const alert = bootstrap.Alert.getOrCreateInstance(alertBox);
+                    alert.close();
+                }, 3000); // 3 seconds
+            }
+        });
     </script>
 @endsection

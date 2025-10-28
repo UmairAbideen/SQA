@@ -42,111 +42,6 @@
                             @endif
 
                             <div class="row">
-
-                                <!-- Date -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Date</label>
-                                        <input type="date" name="date" class="form-control"
-                                            value="{{ old('date', $auditReply->date) }}">
-                                        @error('date')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Time -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Time</label>
-                                        <input type="time" name="time" class="form-control"
-                                            value="{{ old('time', $auditReply->time) }}">
-                                        @error('time')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Reply -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply</label>
-                                        <input type="text" name="reply" class="form-control"
-                                            value="{{ old('reply', $auditReply->reply) }}">
-                                        @error('reply')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Root Cause -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Root Cause</label>
-                                        <textarea name="root_cause" class="form-control" rows="1">{{ old('root_cause', $auditReply->root_cause) }}</textarea>
-                                        @error('root_cause')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Corrective Action -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Corrective Action</label>
-                                        <textarea name="corrective_action" class="form-control" rows="1">{{ old('corrective_action', $auditReply->corrective_action) }}</textarea>
-                                        @error('corrective_action')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Preventive Action -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Preventive Action</label>
-                                        <textarea name="preventive_action" class="form-control" rows="1">{{ old('preventive_action', $auditReply->preventive_action) }}</textarea>
-                                        @error('preventive_action')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Reply By -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Reply By</label>
-                                        <input type="text" name="reply_by" class="form-control"
-                                            value="{{ old('reply_by', $auditReply->reply_by) }}">
-                                        @error('reply_by')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <!-- Attachment -->
-                                <div class="col-md-6 px-3">
-                                    <div class="align-self-center my-4">
-                                        <input type="file" name="attachment" class="btn btn-sm bg-gradient-secondary">
-                                        @error('attachment')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Attachment Detail -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Attachment Detail</label>
-                                        <textarea name="attachment_detail" class="form-control" rows="1">{{ old('attachment_detail', $auditReply->attachment_detail) }}</textarea>
-                                        @error('attachment_detail')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Target Date After Extension -->
                                 <div class="col-md-3 px-3">
                                     <div class="input-group input-group-static mb-4">
@@ -181,41 +76,12 @@
                                     </div>
                                 </div>
 
-                                <!-- Closing Date -->
-                                <div class="col-md-3 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closing Date</label>
-                                        <input type="date" name="closing_date" class="form-control"
-                                            value="{{ old('closing_date', $auditReply->closing_date) }}">
-                                        @error('closing_date')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
                                 <!-- Closing Remarks -->
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Closing Remarks</label>
                                         <textarea name="closing_remarks" class="form-control" rows="1">{{ old('closing_remarks', $auditReply->closing_remarks) }}</textarea>
                                         @error('closing_remarks')
-                                            <div class="text-danger small">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Closed By -->
-                                <div class="col-md-6 px-3">
-                                    <div class="input-group input-group-static mb-4">
-                                        <label>Closed By</label>
-                                        <select name="closed_by" class="form-control">
-                                            <option value="">-- Select --</option>
-                                            <option value="{{ Auth::user()->username }}"
-                                                {{ old('closed_by', $auditReply->closed_by) == Auth::user()->username ? 'selected' : '' }}>
-                                                {{ Auth::user()->username }}
-                                            </option>
-                                        </select>
-                                        @error('closed_by')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>
@@ -240,7 +106,6 @@
                                         @enderror
                                     </div>
                                 </div>
-
 
                                 <div class="mt-3">
                                     <button type="submit" class="btn bg-gradient-success">Submit</button>

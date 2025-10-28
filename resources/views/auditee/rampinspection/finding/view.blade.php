@@ -147,15 +147,15 @@
 
                         {{-- Right-Aligned Import + Add New --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
-                            <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
+                            {{-- <button type="button" class="btn bg-gradient-success w-100 w-md-auto" data-bs-toggle="modal"
                                 data-bs-target="#modal-import-staff" title="Import Staff & SES">
                                 Excel
-                            </button>
+                            </button> --}}
 
-                            <a href="{{ route('auditee.rampinspection.finding.form', $rampInspection->id) }}"
+                            {{-- <a href="{{ route('auditee.rampinspection.finding.form', $rampInspection->id) }}"
                                 class="btn bg-gradient-success w-100 w-md-auto">
                                 + Add New
-                            </a>
+                            </a> --}}
                         </div>
                     </div>
 
@@ -262,8 +262,8 @@
                                         </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment</th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">
-                                            Email</th>
+                                        {{-- <th class="text-center text-secondary small font-weight-bolder opacity-9">
+                                            Email</th> --}}
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Replies</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Actions
@@ -323,7 +323,7 @@
                                                 </div>
                                             </td>
 
-                                            <td>
+                                            {{-- <td>
                                                 <div class="d-flex justify-content-center align-items-center">
                                                     <button class="btn bg-transparent btn-sm m-0" data-bs-toggle="modal"
                                                         data-bs-target="#emailModal{{ $finding->id }}">
@@ -331,7 +331,7 @@
                                                             style="font-size: 1.5rem;">email</span>
                                                     </button>
                                                 </div>
-                                            </td>
+                                            </td> --}}
 
                                             <!-- Email Modal -->
                                             <div class="modal fade" id="emailModal{{ $finding->id }}" tabindex="-1"
@@ -446,7 +446,7 @@ Serene Eng. Services
                                                     </div>
 
 
-                                                    <div>
+                                                    {{-- <div>
                                                         <a href="{{ route('auditee.rampinspection.finding.edit', $finding->id) }}"
                                                             class="btn bg-transparent btn-sm btn-tooltip m-0"
                                                             role="button" aria-pressed="true" data-bs-toggle="tooltip"
@@ -507,7 +507,7 @@ Serene Eng. Services
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </td>
                                         </tr>
