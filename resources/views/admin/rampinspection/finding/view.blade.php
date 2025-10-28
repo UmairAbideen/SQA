@@ -114,6 +114,9 @@
                         {{-- Centered Date Filters + Export Button --}}
                         <div class="col-12 col-md-10">
                             <div class="row g-2 justify-content-center">
+
+                                <input type="hidden" id="current_ramp_id" value="{{ $rampInspection->id }}">
+
                                 {{-- Date From --}}
                                 <div class="col-6 col-md-auto">
                                     <div class="input-group input-group-static w-100">
