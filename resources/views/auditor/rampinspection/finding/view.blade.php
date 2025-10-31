@@ -114,6 +114,9 @@
                         {{-- Centered Date Filters + Export Button --}}
                         <div class="col-12 col-md-10">
                             <div class="row g-2 justify-content-center">
+
+                                <input type="hidden" id="current_ramp_id" value="{{ $rampInspection->id }}">
+
                                 {{-- Date From --}}
                                 <div class="col-6 col-md-auto">
                                     <div class="input-group input-group-static w-100">
@@ -141,6 +144,7 @@
                                 </div>
                             </div>
                         </div>
+
 
                         {{-- Right-Aligned Import + Add New --}}
                         <div class="col-12 col-md-2 d-flex flex-wrap justify-content-center justify-content-md-end gap-2">
@@ -230,7 +234,8 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert"
+                                class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -566,8 +571,10 @@ Serene Eng. Services
                 return;
             }
 
-            const url = `/auditor/rampinspection/${rampId}/finding/export/pdf?start_date=${startDate}&end_date=${endDate}`;
+            const url = `/auditor/rampinspection/finding/print/pdf/${rampId}?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
+
+
         }
 
         function exportRampFindingExcel(rampId) {
