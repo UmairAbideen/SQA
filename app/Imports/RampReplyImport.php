@@ -25,6 +25,7 @@ class RampReplyImport implements ToCollection, WithHeadingRow
                 'reply_by' => $row['reply_by'],
                 'remarks' => $row['remarks'],
                 'remarks_by' => $row['remarks_by'],
+                'draft' => $row['draft'],
                 'status' => $row['status'],
             ]);
         }
