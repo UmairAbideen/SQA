@@ -697,6 +697,8 @@ class AuditorRampInspectionController extends Controller
         return $pdf->download('RampInspectionReply.pdf');
     }
 
+
+
     public function exportRepliesOfRampFindingByDateRange(Request $request, $findingId)
     {
         $startDate = $request->query('start_date');
@@ -706,6 +708,7 @@ class AuditorRampInspectionController extends Controller
             return redirect()->back()->with('error', 'Please select start and end dates.');
         }
 
+        // Get finding and replies in date range
         $finding = RampInspectionFinding::with([
             'rampInspection',
             'rampInspectionReply' => function ($query) use ($startDate, $endDate) {
@@ -724,6 +727,7 @@ class AuditorRampInspectionController extends Controller
             ->setPaper('a4', 'landscape')
             ->stream('RampFindingRepliesRange.pdf');
     }
+
 
     public function importRampReplies(Request $request, $findingId)
     {
