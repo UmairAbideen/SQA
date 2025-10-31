@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auditor;
+namespace App\Http\Controllers\auditor;
 
 use Illuminate\Http\Request;
 use App\Models\RampInspection;

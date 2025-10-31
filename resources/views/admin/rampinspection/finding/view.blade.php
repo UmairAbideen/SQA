@@ -233,7 +233,8 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert"
+                                class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
