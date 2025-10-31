@@ -571,10 +571,8 @@ Serene Eng. Services
                 return;
             }
 
-            const url = `/auditor/rampinspection/finding/print/pdf/${rampId}?start_date=${startDate}&end_date=${endDate}`;
+            const url = `/auditor/rampinspection/${rampId}/finding/export/pdf?start_date=${startDate}&end_date=${endDate}`;
             window.open(url, '_blank');
-
-
         }
 
         function exportRampFindingExcel(rampId) {
