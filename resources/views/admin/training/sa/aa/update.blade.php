@@ -62,8 +62,8 @@
                                 <div class="col-md-6 px-3">
                                     <div class="input-group input-group-static mb-4">
                                         <label>Audit Scope</label>
-                                        <input type="text" name="audit_scope" class="form-control"
-                                            value="{{ old('audit_scope', $record->scope) }}">
+                                        <input type="text" name="scope" class="form-control"
+                                            value="{{ old('scope', $record->scope) }}">
                                         @error('audit_scope')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror

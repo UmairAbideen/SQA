@@ -57,11 +57,11 @@ class AuthorizedAuditorController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'audit_scope' => 'required|string',
+            'scope' => 'required|string',
         ]);
 
         AuthorizedAuditor::where('id', $id)->update($request->only([
-            'audit_scope',
+            'scope',
         ]));
 
         return redirect()->route('admin.auditor.single', ['id' => $id])
