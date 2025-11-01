@@ -519,7 +519,7 @@ class AuditController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        return view('auditor.audit.finding.reply.view', [
+        return view('admin.audit.finding.reply.view', [
             'auditFindings' => $auditFinding,
         ]);
     }
