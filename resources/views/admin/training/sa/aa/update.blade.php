@@ -64,7 +64,7 @@
                                         <label>Audit Scope</label>
                                         <input type="text" name="scope" class="form-control"
                                             value="{{ old('scope', $record->scope) }}">
-                                        @error('audit_scope')
+                                        @error('scope')
                                             <div class="text-danger small">{{ $message }}</div>
                                         @enderror
                                     </div>
