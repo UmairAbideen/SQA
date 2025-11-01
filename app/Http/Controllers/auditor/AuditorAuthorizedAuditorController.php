@@ -55,7 +55,7 @@ class AuditorAuthorizedAuditorController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'scope' => 'nullable|string',
+            'scope' => 'required|string',
         ]);
 
         AuthorizedAuditor::where('id', $id)->update($request->only(['scope']));
