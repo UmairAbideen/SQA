@@ -34,6 +34,7 @@ class AuditReplyImport implements ToModel, WithHeadingRow
             'qa_remarks'                => $row['qa_remarks'],
             'closed_by'                 => $row['closed_by'],
             'final_remarks'             => $row['final_remarks'],
+            'draft'                     => $row['draft'],
             'status'                    => $row['status'],
             'closing_date'              => $this->parseDate($row['closing_date']),
             'closing_remarks'           => $row['closing_remarks'],
