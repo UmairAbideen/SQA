@@ -345,11 +345,15 @@
                                                                 <div class="input-group input-group-static mb-4 px-3">
                                                                     <label>Body</label>
                                                                     <textarea name="body" class="form-control" rows="8">
-Hello,
-
-This is a static test email from the Audit module.
-
-If you receive this, email sending is working fine.
+Finding No: {{ $finding->finding_number ?? '' }}
+Level: {{ $finding->finding_level ?? '' }}
+Nature: {{ $finding->nature_of_finding ?? '' }}
+Finding: {{ $finding->finding ?? '' }}
+Audit Ref: {{ $finding->audit->audit_reference ?? '' }}
+Audit Type: {{ $finding->audit->audit_type ?? '' }}
+Section: {{ $finding->audit->section ?? '' }}
+Location: {{ $finding->audit->location ?? '' }}
+Audit Date: {{ $finding->audit->audit_date ?? '' }}
                     </textarea>
                                                                 </div>
                                                             </div>
