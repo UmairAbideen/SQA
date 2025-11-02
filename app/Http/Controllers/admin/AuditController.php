@@ -474,30 +474,42 @@ class AuditController extends Controller
 
 
 
-public function sendFindingEmail(Request $request, $id)
-{
-    \Log::info("sendFindingEmail triggered", ['id' => $id, 'data' => $request->all()]);
+    public function sendFindingEmail(Request $request, $id)
+    {
+        \Log::info("STEP 1: sendFindingEmail triggered", ['id' => $id]);
 
-    $request->validate([
-        'to' => 'required|email',
-        'cc' => 'nullable|string',
-        'bcc' => 'nullable|string',
-        'subject' => 'required|string|max:255',
-        'body' => 'required|string',
-    ]);
+        $request->validate([
+            'to' => 'required|email',
+            'subject' => 'required|string|max:255',
+            'body' => 'required|string',
+        ]);
 
-    $finding = AuditFinding::with('audit')->findOrFail($id);
+        \Log::info("STEP 2: validation passed");
 
-    $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
-    $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
+        try {
+            $finding = \App\Models\AuditFinding::with('audit')->findOrFail($id);
+            \Log::info("STEP 3: finding loaded", ['finding' => $finding->id, 'has_audit' => !empty($finding->audit)]);
+        } catch (\Exception $e) {
+            \Log::error("STEP 3 FAILED: Could not load finding", ['error' => $e->getMessage()]);
+            abort(403, 'Error loading finding');
+        }
 
-    \Mail::to($request->to)
-        ->cc($cc)
-        ->bcc($bcc)
-        ->send(new AuditFindingReminderMail($finding, $request->subject, $request->body));
+        try {
+            \Mail::to($request->to)->send(new \App\Mail\AuditFindingReminderMail(
+                $finding,
+                $request->subject,
+                $request->body
+            ));
+            \Log::info("STEP 4: Mail sent successfully");
+        } catch (\Exception $e) {
+            \Log::error("STEP 4 FAILED: Mail send error", ['error' => $e->getMessage()]);
+            abort(403, 'Error sending mail');
+        }
 
-    return back()->with('status', 'Email sent successfully.');
-}
+        \Log::info("STEP 5: Completed");
+        return back()->with('status', 'Email sent successfully.');
+    }
+
 
 
 
