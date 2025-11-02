@@ -446,53 +446,58 @@ class AuditController extends Controller
 
 
 
-    // // Option 2: keep {id} but adjust method signature
-    // public function sendFindingEmail(Request $request, $id)
-    // {
-    //     $finding = AuditFinding::with('audit')->findOrFail($id);
-
-    //     $request->validate([
-    //         'to' => 'required|email',
-    //         'cc' => 'nullable|string',
-    //         'bcc' => 'nullable|string',
-    //         'subject' => 'required|string|max:255',
-    //         'body' => 'required|string',
-    //     ]);
-
-    //     $finding = AuditFinding::with('audit')->findOrFail($id);
-
-    //     $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
-    //     $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
-
-    //     Mail::to($request->to)
-    //         ->cc($cc)
-    //         ->bcc($bcc)
-    //         ->send(new AuditFindingReminderMail($finding, $request->subject, $request->body));
-
-    //     return back()->with('status', 'Email sent successfully.');
-    // }
-
-
-
+    // Option 2: keep {id} but adjust method signature
     public function sendFindingEmail(Request $request, $id)
     {
-        \Log::info("sendFindingEmail triggered", ['id' => $id, 'data' => $request->all()]);
+        $finding = AuditFinding::with('audit')->findOrFail($id);
 
         $request->validate([
             'to' => 'required|email',
+            'cc' => 'nullable|string',
+            'bcc' => 'nullable|string',
             'subject' => 'required|string|max:255',
             'body' => 'required|string',
         ]);
 
-        // Send simple text mail for test
-        \Mail::raw($request->body, function ($message) use ($request) {
-            $message->to($request->to)
-                ->subject($request->subject);
-        });
+        $finding = AuditFinding::with('audit')->findOrFail($id);
 
-        return back()->with('status', 'Test email sent successfully.');
+        $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
+        $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
+
+        Mail::to($request->to)
+            ->cc($cc)
+            ->bcc($bcc)
+            ->send(new AuditFindingReminderMail($finding, $request->subject, $request->body));
+
+        return back()->with('status', 'Email sent successfully.');
     }
 
+
+
+// public function sendFindingEmail(Request $request, $id)
+// {
+//     \Log::info("sendFindingEmail triggered", ['id' => $id, 'data' => $request->all()]);
+
+//     $request->validate([
+//         'to' => 'required|email',
+//         'cc' => 'nullable|string',
+//         'bcc' => 'nullable|string',
+//         'subject' => 'required|string|max:255',
+//         'body' => 'required|string',
+//     ]);
+
+//     $finding = AuditFinding::with('audit')->findOrFail($id);
+
+//     $cc = $request->cc ? array_map('trim', explode(',', $request->cc)) : [];
+//     $bcc = $request->bcc ? array_map('trim', explode(',', $request->bcc)) : [];
+
+//     \Mail::to($request->to)
+//         ->cc($cc)
+//         ->bcc($bcc)
+//         ->send(new AuditFindingReminderMail($finding, $request->subject, $request->body));
+
+//     return back()->with('status', 'Email sent successfully.');
+// }
 
 
 
