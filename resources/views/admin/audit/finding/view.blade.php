@@ -346,7 +346,9 @@
                                                                    <textarea name="body" class="form-control" rows="8">
 Dear Auditee,
 
-This is a test for finding #{{ $finding->finding_number ?? 'N/A' }}.
+Finding No: {{ $finding->finding_number ?? 'N/A' }}
+Level: {{ $finding->finding_level ?? 'N/A' }}
+Nature: {{ $finding->nature_of_finding ?? 'N/A' }}
 
 Best regards,
 QA Team
