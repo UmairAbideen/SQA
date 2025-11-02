@@ -4,21 +4,20 @@ namespace App\Http\Controllers\admin;
 
 use App\Models\Audit;
 use App\Models\AuditReply;
-use App\Exports\AuditExport;
 use App\Imports\AuditImport;
 use App\Models\AuditFinding;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
-use App\Exports\AuditReplyExport;
-use App\Imports\AuditReplyImport;
-use App\Exports\AuditFindingExport;
-use App\Imports\AuditFindingImport;
-use Illuminate\Support\Facades\Log;
+use App\Exports\AuditExport;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Mail\AuditFindingReminderMail;
 use Illuminate\Support\Facades\Storage;
+use App\Imports\AuditFindingImport;
+use App\Exports\AuditFindingExport;
+use App\Imports\AuditReplyImport;
+use App\Exports\AuditReplyExport;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AuditFindingReminderMail;
 
 
 
@@ -450,13 +449,6 @@ class AuditController extends Controller
     // Option 2: keep {id} but adjust method signature
     public function sendFindingEmail(Request $request, $id)
     {
-
-        Log::info('sendFindingEmail triggered', [
-            'user' => auth()->user()->name ?? 'Guest',
-            'id' => $id,
-            'url' => $request->fullUrl()
-        ]);
-
         $finding = AuditFinding::with('audit')->findOrFail($id);
 
         $request->validate([
