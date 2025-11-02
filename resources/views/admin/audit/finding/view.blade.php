@@ -349,6 +349,8 @@ Dear Auditee,
 Finding No: {{ $finding->finding_number ?? 'N/A' }}
 Level: {{ $finding->finding_level ?? 'N/A' }}
 Nature: {{ $finding->nature_of_finding ?? 'N/A' }}
+Audit Ref: {{ $finding->audit->audit_reference ?? 'N/A' }}
+
 
 Best regards,
 QA Team
