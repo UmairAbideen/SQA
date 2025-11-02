@@ -303,7 +303,73 @@
                                             </td>
 
 
+
                                             <td>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <button class="btn bg-transparent btn-sm m-0" data-bs-toggle="modal"
+                                                        data-bs-target="#emailTestModal">
+                                                        <span class="material-icons"
+                                                            style="font-size: 1.5rem;">email</span>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <!-- Static Email Modal -->
+                                            <div class="modal fade" id="emailTestModal" tabindex="-1" role="dialog"
+                                                aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                    <div class="modal-content">
+                                                        <form action="{{ route('admin.audit.finding.sendEmail', 1) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <div class="modal-header">
+                                                                <h6 class="modal-title">Send Test Email</h6>
+                                                                <button type="button" class="btn-close text-dark"
+                                                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+
+                                                            <div class="modal-body">
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>To</label>
+                                                                    <input type="email" name="to"
+                                                                        class="form-control" required>
+                                                                </div>
+
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>Subject</label>
+                                                                    <input type="text" name="subject"
+                                                                        class="form-control"
+                                                                        value="Test Email from Audit Module">
+                                                                </div>
+
+                                                                <div class="input-group input-group-static mb-4 px-3">
+                                                                    <label>Body</label>
+                                                                    <textarea name="body" class="form-control" rows="8">
+Hello,
+
+This is a static test email from the Audit module.
+
+If you receive this, email sending is working fine.
+                    </textarea>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="modal-footer">
+                                                                <button type="submit"
+                                                                    class="btn bg-gradient-success">Send Email</button>
+                                                                <button type="button" class="btn btn-light btn-sm"
+                                                                    data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+
+
+                                            {{-- <td>
                                                 <div class="d-flex justify-content-center align-items-center">
                                                     @if (!empty($finding))
                                                         <button class="btn bg-transparent btn-sm m-0"
@@ -371,15 +437,15 @@
 
 You are requested to provide a reply for the following finding:
 
-Finding No: {{ $finding->finding_number ?? 'N/A' }}
-Level: {{ $finding->finding_level ?? 'N/A' }}
-Nature: {{ $finding->nature_of_finding ?? 'N/A' }}
-Finding: {{ $finding->finding ?? 'N/A' }}
-Audit Ref: {{ optional($finding->audit)->audit_reference ?? 'N/A' }}
-Audit Type: {{ optional($finding->audit)->audit_type ?? 'N/A' }}
-Section: {{ optional($finding->audit)->section ?? 'N/A' }}
-Location: {{ optional($finding->audit)->location ?? 'N/A' }}
-Audit Date: {{ optional($finding->audit)->audit_date ?? 'N/A' }}
+Finding No: {{ $finding->finding_number ?? '' }}
+Level: {{ $finding->finding_level ?? '' }}
+Nature: {{ $finding->nature_of_finding ?? '' }}
+Finding: {{ $finding->finding ?? '' }}
+Audit Ref: {{ $finding->audit->audit_reference ?? '' }}
+Audit Type: {{ $finding->audit->audit_type ?? '' }}
+Section: {{ $finding->audit->section ?? '' }}
+Location: {{ $finding->audit->location ?? '' }}
+Audit Date: {{ $finding->audit->audit_date ?? '' }}
 
 Best regards,
 Quality Assurance
@@ -398,8 +464,7 @@ Serene Eng. Services
                                                         </div>
                                                     </div>
                                                 </div>
-                                            @endif
-
+                                            @endif --}}
 
 
 
