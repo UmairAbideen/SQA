@@ -343,13 +343,15 @@
 
                                                                 <div class="input-group input-group-static mb-4 px-3">
                                                                     <label>Body</label>
-                                                                    <textarea name="body" class="form-control" rows="8">
-Hello,
+                                                                   <textarea name="body" class="form-control" rows="8">
+Dear Auditee,
 
-This is a static test email from the Audit module.
+This is a test for finding #{{ $finding->finding_number ?? 'N/A' }}.
 
-If you receive this, email sending is working fine.
-                    </textarea>
+Best regards,
+QA Team
+</textarea>
+
                                                                 </div>
                                                             </div>
 
