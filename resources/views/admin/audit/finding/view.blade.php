@@ -305,10 +305,10 @@
 
                                             <td>
                                                 <div class="d-flex justify-content-center align-items-center">
-                                                    @if (!empty($finding) && $finding->id)
+                                                    @if (!empty($finding))
                                                         <button class="btn bg-transparent btn-sm m-0"
                                                             data-bs-toggle="modal"
-                                                            data-bs-target="#emailModal{{ $finding->id }}">
+                                                            data-bs-target="#emailModal{{ $finding->id ?? '' }}">
                                                             <span class="material-icons"
                                                                 style="font-size: 1.5rem;">email</span>
                                                         </button>
@@ -316,18 +316,17 @@
                                                 </div>
                                             </td>
 
-                                            @if (!empty($finding) && $finding->id)
+                                            @if (!empty($finding))
                                                 <!-- Email Modal -->
-                                                <div class="modal fade" id="emailModal{{ $finding->id }}"
+                                                <div class="modal fade" id="emailModal{{ $finding->id ?? '' }}"
                                                     tabindex="-1" role="dialog" aria-hidden="true">
                                                     <div class="modal-dialog modal-dialog-centered modal-lg"
                                                         role="document">
                                                         <div class="modal-content">
                                                             <form
-                                                                action="{{ route('admin.audit.finding.sendEmail', $finding->id) }}"
+                                                                action="{{ route('admin.audit.finding.sendEmail', $finding->id ?? 0) }}"
                                                                 method="POST">
                                                                 @csrf
-
                                                                 <div class="modal-header">
                                                                     <h6 class="modal-title">
                                                                         Send Email for Audit Finding
@@ -363,12 +362,8 @@
                                                                         <label>Subject</label>
                                                                         <input type="text" name="subject"
                                                                             class="form-control"
-                                                                            value="Reminder: Reply Required for Audit Finding #{{ $finding->finding_number ?? 'N/A' }}">
+                                                                            value="Reminder: Reply Required for Audit Finding #{{ $finding->finding_number ?? '' }}">
                                                                     </div>
-
-                                                                    @php
-                                                                        $audit = $finding->audit ?? null;
-                                                                    @endphp
 
                                                                     <div class="input-group input-group-static mb-4 px-3">
                                                                         <label>Body</label>
@@ -380,12 +375,11 @@ Finding No: {{ $finding->finding_number ?? 'N/A' }}
 Level: {{ $finding->finding_level ?? 'N/A' }}
 Nature: {{ $finding->nature_of_finding ?? 'N/A' }}
 Finding: {{ $finding->finding ?? 'N/A' }}
-
-Audit Ref: {{ $audit->audit_reference ?? 'N/A' }}
-Audit Type: {{ $audit->audit_type ?? 'N/A' }}
-Section: {{ $audit->section ?? 'N/A' }}
-Location: {{ $audit->location ?? 'N/A' }}
-Audit Date: {{ $audit->audit_date ?? 'N/A' }}
+Audit Ref: {{ optional($finding->audit)->audit_reference ?? 'N/A' }}
+Audit Type: {{ optional($finding->audit)->audit_type ?? 'N/A' }}
+Section: {{ optional($finding->audit)->section ?? 'N/A' }}
+Location: {{ optional($finding->audit)->location ?? 'N/A' }}
+Audit Date: {{ optional($finding->audit)->audit_date ?? 'N/A' }}
 
 Best regards,
 Quality Assurance
