@@ -476,7 +476,7 @@ class AuditController extends Controller
 
     public function sendFindingEmail(Request $request, $id)
     {
-        \Log::info("STEP 1: sendFindingEmail triggered", ['id' => $id]);
+        \Log::info("sendFindingEmail triggered", ['id' => $id, 'data' => $request->all()]);
 
         $request->validate([
             'to' => 'required|email',
@@ -484,30 +484,13 @@ class AuditController extends Controller
             'body' => 'required|string',
         ]);
 
-        \Log::info("STEP 2: validation passed");
+        // Send simple text mail for test
+        \Mail::raw($request->body, function ($message) use ($request) {
+            $message->to($request->to)
+                ->subject($request->subject);
+        });
 
-        try {
-            $finding = \App\Models\AuditFinding::with('audit')->findOrFail($id);
-            \Log::info("STEP 3: finding loaded", ['finding' => $finding->id, 'has_audit' => !empty($finding->audit)]);
-        } catch (\Exception $e) {
-            \Log::error("STEP 3 FAILED: Could not load finding", ['error' => $e->getMessage()]);
-            abort(403, 'Error loading finding');
-        }
-
-        try {
-            \Mail::to($request->to)->send(new \App\Mail\AuditFindingReminderMail(
-                $finding,
-                $request->subject,
-                $request->body
-            ));
-            \Log::info("STEP 4: Mail sent successfully");
-        } catch (\Exception $e) {
-            \Log::error("STEP 4 FAILED: Mail send error", ['error' => $e->getMessage()]);
-            abort(403, 'Error sending mail');
-        }
-
-        \Log::info("STEP 5: Completed");
-        return back()->with('status', 'Email sent successfully.');
+        return back()->with('status', 'Test email sent successfully.');
     }
 
 
