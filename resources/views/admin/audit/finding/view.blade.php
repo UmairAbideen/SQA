@@ -303,7 +303,7 @@
                                             </td>
 
 
-                                            <td>
+                                            {{-- <td>
                                                 <div class="d-flex justify-content-center align-items-center">
                                                     <button class="btn bg-transparent btn-sm m-0" data-bs-toggle="modal"
                                                         data-bs-target="#emailModal{{ $finding->id }}">
@@ -387,7 +387,107 @@ Serene Eng. Services
                                                         </form>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div> --}}
+
+
+
+                                            <td>
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    @if (!empty($finding))
+                                                        <button class="btn bg-transparent btn-sm m-0"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#emailModal{{ $finding->id ?? '' }}">
+                                                            <span class="material-icons"
+                                                                style="font-size: 1.5rem;">email</span>
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </td>
+
+                                            @if (!empty($finding))
+                                                <!-- Email Modal -->
+                                                <div class="modal fade" id="emailModal{{ $finding->id ?? '' }}"
+                                                    tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-lg"
+                                                        role="document">
+                                                        <div class="modal-content">
+                                                            <form
+                                                                action="{{ route('admin.audit.finding.sendEmail', $finding->id ?? 0) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="modal-header">
+                                                                    <h6 class="modal-title">
+                                                                        Send Email for Audit Finding
+                                                                        #{{ $finding->finding_number ?? 'N/A' }}
+                                                                    </h6>
+                                                                    <button type="button" class="btn-close text-dark"
+                                                                        data-bs-dismiss="modal"
+                                                                        aria-label="Close"></button>
+                                                                </div>
+
+                                                                <div class="modal-body">
+                                                                    <div class="input-group input-group-static mb-4 px-3">
+                                                                        <label>To</label>
+                                                                        <input type="email" name="to"
+                                                                            class="form-control" required>
+                                                                    </div>
+
+                                                                    <div class="input-group input-group-static mb-4 px-3">
+                                                                        <label>CC</label>
+                                                                        <input type="text" name="cc"
+                                                                            class="form-control"
+                                                                            placeholder="Separate multiple emails with commas">
+                                                                    </div>
+
+                                                                    <div class="input-group input-group-static mb-4 px-3">
+                                                                        <label>BCC</label>
+                                                                        <input type="text" name="bcc"
+                                                                            class="form-control"
+                                                                            placeholder="Separate multiple emails with commas">
+                                                                    </div>
+
+                                                                    <div class="input-group input-group-static mb-4 px-3">
+                                                                        <label>Subject</label>
+                                                                        <input type="text" name="subject"
+                                                                            class="form-control"
+                                                                            value="Reminder: Reply Required for Audit Finding #{{ $finding->finding_number ?? '' }}">
+                                                                    </div>
+
+                                                                    <div class="input-group input-group-static mb-4 px-3">
+                                                                        <label>Body</label>
+                                                                        <textarea name="body" class="form-control" rows="8">Dear Auditee,
+
+You are requested to provide a reply for the following finding:
+
+Finding No: {{ $finding->finding_number ?? '' }}
+Level: {{ $finding->finding_level ?? '' }}
+Nature: {{ $finding->nature_of_finding ?? '' }}
+Finding: {{ $finding->finding ?? '' }}
+Audit Ref: {{ $finding->audit->audit_reference ?? '' }}
+Audit Type: {{ $finding->audit->audit_type ?? '' }}
+Section: {{ $finding->audit->section ?? '' }}
+Location: {{ $finding->audit->location ?? '' }}
+Audit Date: {{ $finding->audit->audit_date ?? '' }}
+
+Best regards,
+Quality Assurance
+Serene Eng. Services
+</textarea>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="modal-footer">
+                                                                    <button type="submit"
+                                                                        class="btn bg-gradient-success">Send Email</button>
+                                                                    <button type="button" class="btn btn-light btn-sm"
+                                                                        data-bs-dismiss="modal">Close</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+
 
 
                                             <td class="align-middle text-center text-sm">

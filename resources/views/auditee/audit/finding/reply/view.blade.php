@@ -215,7 +215,8 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert"
+                                class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -248,11 +249,11 @@
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment
                                         </th>
-                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Draft
-                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">
                                             Attachment
                                             Detail</th>
+                                        <th class="text-center text-secondary small font-weight-bolder opacity-9">Draft
+                                        </th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">Target
                                             Date (After Extension)</th>
                                         <th class="text-center text-secondary small font-weight-bolder opacity-9">QA
@@ -479,7 +480,7 @@
 
 
 
-          // Wait for DOM to load
+        // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
             const alertBox = document.getElementById('status-alert');
             if (alertBox) {
