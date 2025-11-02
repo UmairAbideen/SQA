@@ -349,11 +349,11 @@ Finding No: {{ $finding->finding_number ?? '' }}
 Level: {{ $finding->finding_level ?? '' }}
 Nature: {{ $finding->nature_of_finding ?? '' }}
 Finding: {{ $finding->finding ?? '' }}
-Audit Ref: {{ $finding->audit->audit_reference ?? '' }}
+{{-- Audit Ref: {{ $finding->audit->audit_reference ?? '' }}
 Audit Type: {{ $finding->audit->audit_type ?? '' }}
 Section: {{ $finding->audit->section ?? '' }}
 Location: {{ $finding->audit->location ?? '' }}
-Audit Date: {{ $finding->audit->audit_date ?? '' }}
+Audit Date: {{ $finding->audit->audit_date ?? '' }} --}}
                     </textarea>
                                                                 </div>
                                                             </div>
