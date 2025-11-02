@@ -26,9 +26,11 @@
                     <div class="card-body ps-3 pe-2 pb-5 pt-4">
 
                         <div class="d-flex justify-content-end pe-2">
-                            <a href="{{ route('admin.audit.finding.view', $auditFindings->id) }}"
+                            {{-- <a href="{{ route('admin.audit.finding.view', $auditFindings->id) }}"
                                 class="btn bg-gradient-success" role="button" aria-pressed="true">Go
-                                Back</a>
+                                Back</a> --}}
+                            <a href="{{ route('admin.audit.finding.view', $auditFindings->audit_id) }}"
+                                class="btn bg-gradient-success" role="button" aria-pressed="true">Go Back</a>
                         </div>
 
                         <div class="table-responsive p-0">
@@ -214,7 +216,8 @@
 
                     @if (session('status') || session('error'))
                         <div class="px-3">
-                            <div id="status-alert" class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
+                            <div id="status-alert"
+                                class="alert {{ session('status') ? 'alert-secondary' : 'alert-secondary' }} alert-dismissible text-white fade show"
                                 role="alert">
                                 <small>{{ session('status') ?? session('error') }}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
@@ -467,7 +470,7 @@
             window.open(url, '_blank');
         }
 
-          // Wait for DOM to load
+        // Wait for DOM to load
         document.addEventListener('DOMContentLoaded', function() {
             const alertBox = document.getElementById('status-alert');
             if (alertBox) {

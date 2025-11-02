@@ -31,7 +31,6 @@
                                 Back</a> --}}
                             <a href="{{ route('director.audit.finding.view', $auditFindings->audit_id) }}"
                                 class="btn bg-gradient-success" role="button" aria-pressed="true">Go Back</a>
-
                         </div>
 
                         <div class="table-responsive p-0">
